@@ -49,9 +49,5 @@ export function useUpdateSupervisorById(
     'mutationFn'
   >
 ) {
-  return useMutation<
-    ICoreHttpResponse<ISupervisor>,
-    AxiosError<ICoreHttpResponse<null>>,
-    IUpdateSupervisorPayload
-  >((payload) => updateSupervisorById(id, payload), options);
+  return useMutation((payload) => updateSupervisorById(id, payload), options);
 }

@@ -61,6 +61,7 @@ export function OutgoingInvitationList() {
           <TableBody>
             {invitationsRes?.data?.map((invitation) => (
               <TableRow
+                key={invitation.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">

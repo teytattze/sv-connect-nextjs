@@ -30,11 +30,7 @@ export function useCreateProject(
     'mutationFn'
   >
 ) {
-  return useMutation<
-    ICoreHttpResponse<IProject>,
-    AxiosError<ICoreHttpResponse<null>>,
-    ICreateProjectPayload
-  >((payload) => createProject(payload), options);
+  return useMutation((payload) => createProject(payload), options);
 }
 
 export function useGetProjectByStudentId(
@@ -68,9 +64,5 @@ export function useUpdateProjectById(
     'mutationFn'
   >
 ) {
-  return useMutation<
-    ICoreHttpResponse<IProject>,
-    AxiosError<ICoreHttpResponse<null>>,
-    IUpdateProjectPayload
-  >((payload) => updateProjectById(id, payload), options);
+  return useMutation((payload) => updateProjectById(id, payload), options);
 }

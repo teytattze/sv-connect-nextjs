@@ -50,11 +50,7 @@ export function useCreateSpecialization(
     'mutationFn'
   >
 ) {
-  return useMutation<
-    ICoreHttpResponse<ISpecialization>,
-    AxiosError<ICoreHttpResponse<null>>,
-    ICreateSpecializationPayload
-  >((payload) => createSpecialization(payload), options);
+  return useMutation((payload) => createSpecialization(payload), options);
 }
 
 export function useUpdateSpecialization(
@@ -69,11 +65,10 @@ export function useUpdateSpecialization(
     'mutationFn'
   >
 ) {
-  return useMutation<
-    ICoreHttpResponse<ISpecialization>,
-    AxiosError<ICoreHttpResponse<null>>,
-    IUpdateSpecializationPayload
-  >((payload) => updateSpecializationById(id, payload), options);
+  return useMutation(
+    (payload) => updateSpecializationById(id, payload),
+    options
+  );
 }
 
 export function useBulkDeleteSpecializationsById(
@@ -87,9 +82,8 @@ export function useBulkDeleteSpecializationsById(
     'mutationFn'
   >
 ) {
-  return useMutation<
-    ICoreHttpResponse<null>,
-    AxiosError<ICoreHttpResponse<null>>,
-    IBulkDeleteSpecializationsByIdPayload
-  >((payload) => bulkDeleteSpecializationsById(payload), options);
+  return useMutation(
+    (payload) => bulkDeleteSpecializationsById(payload),
+    options
+  );
 }

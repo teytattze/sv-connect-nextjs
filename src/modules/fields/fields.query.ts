@@ -46,11 +46,7 @@ export function useCreateField(
     'mutationFn'
   >
 ) {
-  return useMutation<
-    ICoreHttpResponse<IField>,
-    AxiosError<ICoreHttpResponse<null>>,
-    ICreateFieldPayload
-  >((payload) => createField(payload), options);
+  return useMutation((payload) => createField(payload), options);
 }
 
 export function useUpdateFieldById(
@@ -65,11 +61,7 @@ export function useUpdateFieldById(
     'mutationFn'
   >
 ) {
-  return useMutation<
-    ICoreHttpResponse<IField>,
-    AxiosError<ICoreHttpResponse<null>>,
-    IUpdateFieldPayload
-  >((payload) => updateFieldById(id, payload), options);
+  return useMutation((payload) => updateFieldById(id, payload), options);
 }
 
 export function useBulkDeleteFieldsById(
@@ -83,9 +75,5 @@ export function useBulkDeleteFieldsById(
     'mutationFn'
   >
 ) {
-  return useMutation<
-    ICoreHttpResponse<null>,
-    AxiosError<ICoreHttpResponse<null>>,
-    IBulkDeleteFieldsByIdPayload
-  >((payload) => bulkDeleteFieldsById(payload), options);
+  return useMutation((payload) => bulkDeleteFieldsById(payload), options);
 }

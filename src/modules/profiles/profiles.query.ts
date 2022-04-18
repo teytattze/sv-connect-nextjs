@@ -48,9 +48,5 @@ export function useUpdateProfileById(
     'mutationFn'
   >
 ) {
-  return useMutation<
-    ICoreHttpResponse<IProfile>,
-    AxiosError<ICoreHttpResponse<null>>,
-    IUpdateProfilePayload
-  >((payload) => updateProfileById(id, payload), options);
+  return useMutation((payload) => updateProfileById(id, payload), options);
 }

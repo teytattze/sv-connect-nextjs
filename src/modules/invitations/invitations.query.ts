@@ -49,11 +49,7 @@ export function useCreateInvitation(
     'mutationFn'
   >
 ) {
-  return useMutation<
-    ICoreHttpResponse<IInvitation>,
-    AxiosError<ICoreHttpResponse<null>>,
-    ICreateInvitationPayload
-  >((payload) => createInvitation(payload), options);
+  return useMutation((payload) => createInvitation(payload), options);
 }
 
 export function useBulkRejectInvitationsById(
@@ -66,11 +62,7 @@ export function useBulkRejectInvitationsById(
     'mutationFn'
   >
 ) {
-  return useMutation<
-    ICoreHttpResponse<IInvitation[]>,
-    AxiosError<ICoreHttpResponse<null>>,
-    IBulkRejectInvitationsByIdPayload
-  >((payload) => bulkRejectInvitationsById(payload), options);
+  return useMutation((payload) => bulkRejectInvitationsById(payload), options);
 }
 
 export function useAcceptInvitationById(
@@ -83,9 +75,5 @@ export function useAcceptInvitationById(
     'mutationFn'
   >
 ) {
-  return useMutation<
-    ICoreHttpResponse<IInvitation>,
-    AxiosError<ICoreHttpResponse<null>>,
-    string
-  >((id) => acceptInvitationById(id), options);
+  return useMutation((id) => acceptInvitationById(id), options);
 }

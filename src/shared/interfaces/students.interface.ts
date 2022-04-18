@@ -1,5 +1,6 @@
 import { Nullable } from '../types/common.type';
 import { IBaseDomainEntity } from './base.interface';
+import { IProject } from './projects.interface';
 
 export interface IBaseStudent extends IBaseDomainEntity {
   accountId: string;
@@ -7,6 +8,10 @@ export interface IBaseStudent extends IBaseDomainEntity {
 }
 
 export interface IStudent extends IBaseStudent {}
+
+export interface IStudentWithProject extends IStudent {
+  project: IProject;
+}
 
 export interface IIndexStudentsFilter {
   supervisorId?: string;
