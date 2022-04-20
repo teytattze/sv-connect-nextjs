@@ -16,3 +16,7 @@ export interface ICreateAccountPayload {
   password: string;
   role?: AccountRole;
 }
+
+export interface IIndexAccountsFilter {
+  role?: AccountRole;
+}

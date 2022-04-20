@@ -5,13 +5,13 @@ import {
   logout,
   register,
   validateJwt,
-} from '../../services/auth.service';
-import { IAccount } from '../../shared/interfaces/accounts.interface';
+} from 'src/services/auth.service';
+import { IAccount } from 'src/shared/interfaces/accounts.interface';
 import {
   ILoginPayload,
   IRegisterPayload,
-} from '../../shared/interfaces/auth.interface';
-import { ICoreHttpResponse } from '../../shared/interfaces/http-response.interface';
+} from 'src/shared/interfaces/auth.interface';
+import { ICoreHttpResponse } from 'src/shared/interfaces/http-response.interface';
 
 export const useRegister = (
   options?: Omit<

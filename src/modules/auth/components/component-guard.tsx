@@ -1,5 +1,5 @@
-import { useHasPermission } from '../../../hooks/use-has-permission.hook';
-import { AccountRole } from '../../../shared/enums/accounts.enum';
+import { useHasPermission } from 'src/hooks/use-has-permission.hook';
+import { AccountRole } from 'src/shared/enums/accounts.enum';
 
 interface IComponentGuardProps {
   children: React.ReactNode;

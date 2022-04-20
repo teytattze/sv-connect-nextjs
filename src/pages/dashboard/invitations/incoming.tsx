@@ -1,6 +1,6 @@
-import { DashboardLayout } from '../../../layouts/dashboard.layout';
-import { DashboardPageContainer } from '../../../components/dashboard-page-container';
-import { IncomingInvitationsList } from '../../../modules/invitations';
+import { DashboardPageContainer } from 'src/containers/dashboard-page.container';
+import { DashboardLayout } from 'src/layouts/dashboard.layout';
+import { IncomingInvitationsList } from 'src/modules/invitations';
 
 export default function IncomingInvitationListPage() {
   return (

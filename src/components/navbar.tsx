@@ -45,11 +45,11 @@ export function Navbar({ title, handleToggle }: INavbarProps) {
             </Typography>
           </Stack>
           <Stack alignItems="center" direction="row" spacing={1}>
-            <IconButton size="small">
+            <IconButton
+              size="small"
+              onClick={() => push('/dashboard/accounts/me')}
+            >
               <AccountCircleRoundedIcon />
-            </IconButton>
-            <IconButton>
-              <NotificationsNoneRoundedIcon />
             </IconButton>
             <IconButton size="small" onClick={() => logout()}>
               <LogoutRoundedIcon />

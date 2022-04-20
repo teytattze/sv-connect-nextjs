@@ -1,6 +1,6 @@
-import { DashboardLayout } from '../../../layouts/dashboard.layout';
-import { DashboardPageContainer } from '../../../components/dashboard-page-container';
-import { AccountsList } from '../../../modules/accounts';
+import { DashboardLayout } from 'src/layouts/dashboard.layout';
+import { DashboardPageContainer } from 'src/containers/dashboard-page.container';
+import { AccountsList } from 'src/modules/accounts';
 
 export default function AccountsListPage() {
   return (

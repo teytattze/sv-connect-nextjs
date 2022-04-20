@@ -1,49 +1,43 @@
+import { Button, Grid, Stack, Typography } from '@mui/material';
+import { DateTime } from 'luxon';
+import { useSnackbar } from 'notistack';
+import { useQueryClient } from 'react-query';
 import {
-  Alert,
-  Box,
-  Button,
-  Checkbox,
-  Collapse,
-  Grid,
-  IconButton,
-  Paper,
-  Skeleton,
-  Stack,
   Table,
   TableBody,
+  TableBodyRow,
   TableCell,
-  TableContainer,
   TableHead,
-  TableRow,
-  Typography,
-} from '@mui/material';
-import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-import { DateTime } from 'luxon';
-import { LoadingWrapper } from '../../../components/loading-wrapper';
-import { theme } from '../../../styles/theme.style';
-import { useAuth } from '../../auth';
-import { useGetSupervisorByAccountId } from '../../supervisors';
+  TableHeadRow,
+  TableContainer,
+  TableEmptyBox,
+  TableCollapse,
+  TableActionBar,
+} from 'src/components/table';
+import { useTableCheckbox } from 'src/hooks/use-table-checkbox.hook';
+import { useToggle } from 'src/hooks/use-toggle.hook';
+import { useAuth } from 'src/modules/auth';
+import { useGetProjectByStudentId } from 'src/modules/projects';
+import { useGetSupervisorByAccountId } from 'src/modules/supervisors';
+import { InvitationStatus } from 'src/shared/enums/invitations.enum';
+import { IInvitation } from 'src/shared/interfaces/invitations.interface';
 import {
   INDEX_INVITATIONS_QUERY_KEY,
   useAcceptInvitationById,
   useBulkRejectInvitationsById,
   useIndexInvitations,
 } from '../invitations.query';
-import { IInvitation } from '../../../shared/interfaces/invitations.interface';
-import { useGetProjectByStudentId } from '../../projects';
-import { useState } from 'react';
-import { useSnackbar } from 'notistack';
-import { useQueryClient } from 'react-query';
-import { InvitationStatus } from '../../../shared/enums/invitations.enum';
 
 export function IncomingInvitationsList() {
   const { account, isLoading } = useAuth();
 
-  const { data: supervisorRes, isLoading: isGetSupervisorLoading } =
-    useGetSupervisorByAccountId(account!.id, {
-      enabled: !isLoading && !!account,
-    });
+  const {
+    data: supervisorRes,
+    isLoading: isGetSupervisorLoading,
+    isError: isGetSupervisorError,
+  } = useGetSupervisorByAccountId(account!.id, {
+    enabled: !isLoading && !!account,
+  });
 
   const {
     data: invitationsRes,
@@ -57,137 +51,57 @@ export function IncomingInvitationsList() {
     { enabled: !!supervisorRes && !!supervisorRes.data }
   );
 
-  const [selected, setSelected] = useState<string[]>([]);
-
-  const handleResetSelected = () => {
-    setSelected([]);
-  };
-
-  const handleAllCheckboxToggle = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.checked) {
-      const selectedArr = invitationsRes?.data?.map(
-        (invitation) => invitation.id
-      );
-      setSelected(selectedArr || []);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleAllInterminateValue = () => {
-    const selLen = selected.length;
-    const resLen = invitationsRes?.data?.length || 0;
-    return selLen > 0 && selLen < resLen;
-  };
-
-  const handleAllCheckboxValue = () => {
-    const selLen = selected.length;
-    const resLen = invitationsRes?.data?.length || 0;
-    return resLen > 0 && selLen === resLen;
-  };
-
-  const handleCheckboxToggle = (id: string) => {
-    const idx = selected.indexOf(id);
-    if (idx >= 0) {
-      const newSelected = [
-        ...selected.slice(0, idx),
-        ...selected.slice(idx + 1),
-      ];
-      setSelected(newSelected);
-      return;
-    }
-    setSelected((prev) => [...prev, id]);
-  };
-
-  const handleCheckboxValue = (id: string) => {
-    const idx = selected.indexOf(id);
-    return idx >= 0;
-  };
+  const {
+    allCheckboxToggle,
+    allCheckboxValue,
+    allInterminateValue,
+    checkboxToggle,
+    checkboxValue,
+    resetSelected,
+    selected,
+  } = useTableCheckbox(invitationsRes?.data || []);
 
   return (
-    <LoadingWrapper
+    <TableContainer
       loading={isGetSupervisorLoading || isIndexInvitationsLoading}
-      type="skeleton"
-      renderSkeleton={() => (
-        <Box sx={{ width: '100%', px: 1 }}>
-          <Skeleton animation="wave" height={32} />
-          <Skeleton animation="wave" height={32} />
-          <Skeleton animation="wave" height={32} />
-          <Skeleton animation="wave" height={32} />
-          <Skeleton animation="wave" height={32} />
-        </Box>
-      )}
+      error={isGetSupervisorError || isIndexInvitationsError}
     >
-      {!supervisorRes ||
-      !supervisorRes.data ||
-      !invitationsRes ||
-      !invitationsRes.data ? (
-        <Alert severity="error">There is something wrong</Alert>
-      ) : (
-        <TableContainer component={Paper}>
-          <InvitationsListActionsBar
-            supervisorId={supervisorRes?.data?.id}
-            selected={selected}
-            resetSelected={handleResetSelected}
-          />
-          <Table stickyHeader sx={{ width: '100%' }}>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox"></TableCell>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    color="primary"
-                    indeterminate={handleAllInterminateValue()}
-                    checked={handleAllCheckboxValue()}
-                    onChange={handleAllCheckboxToggle}
-                  />
-                </TableCell>
-                <TableCell>StudentId</TableCell>
-                <TableCell>Message</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Created At</TableCell>
-                <TableCell>Updated At</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {invitationsRes?.data?.map((invitation) => (
-                <IncomingInvitationsListRow
-                  key={invitation.id}
-                  invitation={invitation}
-                  handleCheckboxToggle={handleCheckboxToggle}
-                  handleCheckboxValue={handleCheckboxValue}
-                />
-              ))}
-            </TableBody>
-          </Table>
-          {(isIndexInvitationsError ||
-            !invitationsRes ||
-            invitationsRes?.data?.length === 0) && (
-            <Box
-              sx={{
-                background: theme.palette.grey[100],
-                width: '100%',
-                textAlign: 'center',
-                py: 4,
-              }}
-            >
-              <Typography
-                component="h3"
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  fontWeight: 'bold',
-                }}
-              >
-                No data available
-              </Typography>
-            </Box>
-          )}
-        </TableContainer>
+      {supervisorRes && supervisorRes.data && (
+        <InvitationsListActionsBar
+          supervisorId={supervisorRes?.data?.id}
+          selected={selected}
+          resetSelected={resetSelected}
+        />
       )}
-    </LoadingWrapper>
+      <Table>
+        <TableHead>
+          <TableHeadRow
+            checkable
+            expandable
+            indeterminate={allInterminateValue()}
+            checked={allCheckboxValue()}
+            handleAllCheckboxChange={allCheckboxToggle}
+          >
+            <TableCell>StudentId</TableCell>
+            <TableCell>Message</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Created At</TableCell>
+            <TableCell>Updated At</TableCell>
+          </TableHeadRow>
+        </TableHead>
+        <TableBody>
+          {invitationsRes?.data?.map((invitation) => (
+            <IncomingInvitationsListRow
+              key={invitation.id}
+              invitation={invitation}
+              handleCheckboxToggle={checkboxToggle}
+              handleCheckboxValue={checkboxValue}
+            />
+          ))}
+        </TableBody>
+      </Table>
+      {(!invitationsRes || invitationsRes.data) && <TableEmptyBox />}
+    </TableContainer>
   );
 }
 
@@ -202,36 +116,26 @@ export function IncomingInvitationsListRow({
   handleCheckboxValue,
   handleCheckboxToggle,
 }: IIncomingInvitationsListRowProps) {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { isOpen, toggle: handleExpandToggle } = useToggle();
 
-  const { data: projectRes, isLoading: isGetProjectLoading } =
-    useGetProjectByStudentId(invitation.studentId!, {
-      enabled: isOpen && !!invitation && !!invitation.studentId,
-    });
-
-  const handleToggle = () => {
-    setIsOpen((prev) => !prev);
-  };
+  const {
+    data: projectRes,
+    isLoading: isGetProjectLoading,
+    isError: isGetProjectError,
+  } = useGetProjectByStudentId(invitation.studentId!, {
+    enabled: isOpen && !!invitation && !!invitation.studentId,
+  });
 
   return (
     <>
-      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-        <TableCell padding="checkbox" sx={{ textAlign: 'center' }}>
-          <IconButton size="small" onClick={handleToggle}>
-            {isOpen ? (
-              <KeyboardArrowUpRoundedIcon />
-            ) : (
-              <KeyboardArrowDownRoundedIcon />
-            )}
-          </IconButton>
-        </TableCell>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            checked={handleCheckboxValue(invitation.id)}
-            onChange={() => handleCheckboxToggle(invitation.id)}
-          />
-        </TableCell>
+      <TableBodyRow
+        checkable
+        expandable
+        checked={handleCheckboxValue(invitation.id)}
+        expanded={isOpen}
+        handleCheckboxChange={() => handleCheckboxToggle(invitation.id)}
+        handleExpandClick={handleExpandToggle}
+      >
         <TableCell component="th" scope="row">
           {invitation.studentId}
         </TableCell>
@@ -247,10 +151,14 @@ export function IncomingInvitationsListRow({
         <TableCell component="th" scope="row">
           {DateTime.fromISO(invitation.updatedAt).toHTTP()}
         </TableCell>
-      </TableRow>
-      <TableRow>
+      </TableBodyRow>
+      <TableBodyRow>
         <TableCell sx={{ p: 0 }} colSpan={7}>
-          <Collapse in={isOpen} timeout="auto" unmountOnExit>
+          <TableCollapse
+            open={isOpen}
+            loading={isGetProjectLoading}
+            error={isGetProjectError}
+          >
             <Stack sx={{ px: 8, py: 1 }} spacing={1}>
               <Typography variant="h6" component="h3">
                 Project
@@ -317,14 +225,16 @@ export function IncomingInvitationsListRow({
                 </Grid>
                 <Grid item xs={9}>
                   {projectRes?.data?.specializations.map((specialization) => (
-                    <Typography>- {specialization.title || ' - '}</Typography>
+                    <Typography key={specialization.id}>
+                      - {specialization.title || ' - '}
+                    </Typography>
                   ))}
                 </Grid>
               </Grid>
             </Stack>
-          </Collapse>
+          </TableCollapse>
         </TableCell>
-      </TableRow>
+      </TableBodyRow>
     </>
   );
 }
@@ -378,16 +288,7 @@ export function InvitationsListActionsBar({
 
   if (selected.length === 0) return null;
   return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      sx={{
-        p: 2,
-        background: theme.palette.grey[100],
-      }}
-    >
-      <Typography>{selected.length} Item Selected</Typography>
+    <TableActionBar items={selected}>
       <Stack direction="row" alignItems="center" spacing={1}>
         <Button
           color="success"
@@ -400,6 +301,6 @@ export function InvitationsListActionsBar({
           Reject
         </Button>
       </Stack>
-    </Stack>
+    </TableActionBar>
   );
 }

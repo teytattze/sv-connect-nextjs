@@ -1,30 +1,15 @@
 import { LoadingButton } from '@mui/lab';
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Paper,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Alert, Box, Stack, TextField } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useQueryClient } from 'react-query';
-import { FormTitle } from '../../../components/form-title';
-import { LoadingWrapper } from '../../../components/loading-wrapper';
+import { FormModal } from 'src/components/form-modal';
 import {
   ICreateSpecializationPayload,
   ISpecialization,
-} from '../../../shared/interfaces/specializations.interface';
-import { theme } from '../../../styles/theme.style';
-import { useIndexFields } from '../../fields';
+} from 'src/shared/interfaces/specializations.interface';
+import { useIndexFields } from 'src/modules/fields';
 import {
   IUpdateSpecializationForm,
   updateSpecializationValidation,
@@ -33,6 +18,7 @@ import {
   INDEX_SPECIALIZATIONS_QUERY_KEY,
   useUpdateSpecialization,
 } from '../specializations.query';
+import { Select, SelectItem } from 'src/components/select';
 
 interface IUpdateSpecializationModalProps {
   specialization: ISpecialization;
@@ -80,109 +66,73 @@ export function UpdateSpecializationModal({
   };
 
   return (
-    <Modal open={open} onClose={handleToggle}>
-      <Paper
-        sx={{
-          p: 5,
-          my: 12,
-          mx: 'auto',
-          width: '100%',
-          maxWidth: '520px',
-        }}
+    <FormModal
+      title="Update Specialization"
+      submitLoading={isSubmitLoading}
+      open={open}
+      handleClose={handleClose}
+    >
+      <form
+        onSubmit={handleSubmit((payload) => {
+          const formattedPayload: ICreateSpecializationPayload = {
+            title: payload.title,
+            fields: payload.fieldIds.map((id) => ({ id })),
+          };
+          updateSpecialization(formattedPayload);
+        })}
       >
-        <LoadingWrapper loading={isSubmitLoading}>
-          <FormTitle title="Update Specialization" />
-          <form
-            onSubmit={handleSubmit((payload) => {
-              const formattedPayload: ICreateSpecializationPayload = {
-                title: payload.title,
-                fields: payload.fieldIds.map((id) => ({ id })),
-              };
-              updateSpecialization(formattedPayload);
-            })}
-          >
-            <Box sx={{ my: 5 }}>
-              <Stack direction="column" spacing={2.5}>
-                {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-                <Controller
-                  name="title"
-                  control={control}
-                  defaultValue={specialization.title}
-                  rules={updateSpecializationValidation.title}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      id="title"
-                      label="Specialization Title"
-                      variant="outlined"
-                      helperText={formErrors.title?.message}
-                      error={!!formErrors.title}
-                    />
-                  )}
+        <Box sx={{ my: 5 }}>
+          <Stack direction="column" spacing={2.5}>
+            {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+            <Controller
+              name="title"
+              control={control}
+              defaultValue={specialization.title}
+              rules={updateSpecializationValidation.title}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  id="title"
+                  label="Specialization Title"
+                  variant="outlined"
+                  helperText={formErrors.title?.message}
+                  error={!!formErrors.title}
                 />
-                <Controller
-                  name="fieldIds"
-                  control={control}
-                  defaultValue={specialization.fields.map((field) => field.id)}
-                  rules={updateSpecializationValidation.fieldIds}
-                  render={({ field }) => (
-                    <FormControl fullWidth>
-                      <InputLabel>Fields</InputLabel>
-                      <Select {...field} id="field" label="Fields" multiple>
-                        {isIndexFieldsLoading && (
-                          <Box
-                            sx={{
-                              width: '100%',
-                              textAlign: 'center',
-                              pt: 2,
-                              pb: 1,
-                            }}
-                          >
-                            <CircularProgress size={24} />
-                          </Box>
-                        )}
-                        {fieldsRes?.data?.map(({ id, title }) => (
-                          <MenuItem key={id} value={id}>
-                            {title}
-                          </MenuItem>
-                        ))}
-                        {fieldsRes?.data?.length === 0 && (
-                          <Box
-                            sx={{
-                              background: theme.palette.grey[100],
-                              py: 4,
-                              textAlign: 'center',
-                            }}
-                          >
-                            <Typography
-                              color="text.secondary"
-                              variant="body2"
-                              sx={{
-                                fontWeight: 500,
-                                textTransform: 'uppercase',
-                              }}
-                            >
-                              No Field Available
-                            </Typography>
-                          </Box>
-                        )}
-                      </Select>
-                    </FormControl>
-                  )}
-                />
-              </Stack>
-            </Box>
-            <LoadingButton
-              type="submit"
-              variant="contained"
-              loading={isSubmitLoading}
-              fullWidth
-            >
-              Update
-            </LoadingButton>
-          </form>
-        </LoadingWrapper>
-      </Paper>
-    </Modal>
+              )}
+            />
+            <Controller
+              name="fieldIds"
+              control={control}
+              defaultValue={specialization.fields.map((field) => field.id)}
+              rules={updateSpecializationValidation.fieldIds}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  id="fields"
+                  label="Fields"
+                  loading={isIndexFieldsLoading}
+                  empty={!fieldsRes?.data?.length}
+                  multiple
+                >
+                  {fieldsRes?.data?.map(({ id, title }) => (
+                    <SelectItem key={id} value={id}>
+                      {title}
+                    </SelectItem>
+                  ))}
+                </Select>
+              )}
+            />
+          </Stack>
+        </Box>
+        <LoadingButton
+          type="submit"
+          variant="contained"
+          loading={isSubmitLoading}
+          fullWidth
+        >
+          Update
+        </LoadingButton>
+      </form>
+    </FormModal>
   );
 }

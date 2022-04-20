@@ -16,16 +16,16 @@ import {
 } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { IRegisterPayload } from '../../../shared/interfaces/auth.interface';
-import { useRegister } from '../auth.query';
-import { LoadingWrapper } from '../../../components/loading-wrapper';
-import { FormTitle } from '../../../components/form-title';
+import { LoadingWrapper } from 'src/components/loading-wrapper';
+import { FormTitle } from 'src/components/form-title';
+import { AccountRole } from 'src/shared/enums/accounts.enum';
+import { IRegisterPayload } from 'src/shared/interfaces/auth.interface';
 import { registerValidation, registerValue } from '../auth.form';
-import { AccountRole } from '../../../shared/enums/accounts.enum';
-import { useRouter } from 'next/router';
+import { useRegister } from '../auth.query';
 
 export function RegisterForm() {
   const [errorMsg, setErrorMsg] = useState<string>('');
@@ -45,7 +45,7 @@ export function RegisterForm() {
     },
     onSuccess: () => {
       enqueueSnackbar('Register successfully', { variant: 'success' });
-      push('/dashboard', undefined, {shallow: false});
+      push('/dashboard', undefined, { shallow: false });
     },
   });
 

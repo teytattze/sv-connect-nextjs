@@ -1,17 +1,13 @@
+import { Button, Grid, Typography } from '@mui/material';
 import {
   Accordion,
   AccordionDetails,
+  AccordionEmptyDataBox,
   AccordionSummary,
-  Button,
-  Grid,
-  Skeleton,
-  Stack,
-  Typography,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+} from 'src/components/accordion';
+import { useToggle } from 'src/hooks/use-toggle.hook';
 import { useGetProfileByAccountId } from '../profiles.query';
 import { UpdateProfileModal } from './update-profile-modal';
-import { useToggle } from '../../../hooks/use-toggle.hook';
 
 interface IProfileDetailsAccordionProps {
   accountId: string;
@@ -25,37 +21,33 @@ export function ProfileDetailsAccordion({
   const { isOpen: isUpdateModalOpen, toggle: handleUpdateModalToggle } =
     useToggle();
 
-  const { data: profileRes, isLoading } = useGetProfileByAccountId(accountId, {
+  const {
+    data: profileRes,
+    isLoading: isGetProfileLoading,
+    isError: isGetProfileError,
+  } = useGetProfileByAccountId(accountId, {
     enabled: !!accountId && isAccordionOpen,
   });
 
   return (
     <>
       <Accordion expanded={isAccordionOpen} onChange={handleAccordionToggle}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <Typography sx={{ fontWeight: 500, textTransform: 'uppercase' }}>
-              Profile
-            </Typography>
-            <Button
-              size="small"
-              onClick={(ev: React.SyntheticEvent) => {
-                ev.stopPropagation();
-                handleUpdateModalToggle();
-              }}
-            >
-              Edit
-            </Button>
-          </Stack>
+        <AccordionSummary title="Profile">
+          <Button
+            size="small"
+            onClick={(ev: React.SyntheticEvent) => {
+              ev.stopPropagation();
+              handleUpdateModalToggle();
+            }}
+          >
+            Edit
+          </Button>
         </AccordionSummary>
-        <AccordionDetails>
-          {isLoading ? (
-            <>
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
-            </>
-          ) : (
+        <AccordionDetails
+          loading={isGetProfileLoading}
+          error={isGetProfileError}
+        >
+          {profileRes && profileRes.data ? (
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={3}>
                 <Typography
@@ -118,6 +110,8 @@ export function ProfileDetailsAccordion({
                 <Typography>{profileRes?.data?.summary || ' - '}</Typography>
               </Grid>
             </Grid>
+          ) : (
+            <AccordionEmptyDataBox />
           )}
         </AccordionDetails>
       </Accordion>

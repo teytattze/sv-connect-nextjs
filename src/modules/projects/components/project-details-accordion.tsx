@@ -1,19 +1,15 @@
+import { Button, Grid, Typography } from '@mui/material';
 import {
   Accordion,
   AccordionDetails,
+  AccordionEmptyDataBox,
   AccordionSummary,
-  Button,
-  Grid,
-  Skeleton,
-  Stack,
-  Typography,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useGetStudentByAccountId } from '../../students';
+} from 'src/components/accordion';
+import { useToggle } from 'src/hooks/use-toggle.hook';
+import { useGetStudentByAccountId } from 'src/modules/students';
 import { useGetProjectByStudentId } from '../projects.query';
 import { CreateProjectModal } from './create-project-modal';
 import { UpdateProjectModal } from './update-project-modal';
-import { useToggle } from '../../../hooks/use-toggle.hook';
 
 interface IProjectDetailsAccordionProps {
   accountId: string;
@@ -29,23 +25,23 @@ export function ProjectDetailsAccordion({
   const { isOpen: isUpdateModalOpen, toggle: handleUpdateModalToggle } =
     useToggle();
 
-  const { data: studentRes, isLoading: isStudentLoading } =
-    useGetStudentByAccountId(accountId, {
-      enabled: !!accountId && isAccordionOpen,
-    });
-  const { data: projectRes, isLoading: isProjectLoading } =
+  const {
+    data: studentRes,
+    isLoading: isGetStudentLoading,
+    isError: isGetStudentError,
+  } = useGetStudentByAccountId(accountId, {
+    enabled: !!accountId && isAccordionOpen,
+  });
+  const { data: projectRes, isLoading: isGetProjectLoading } =
     useGetProjectByStudentId(studentRes?.data?.id || '', {
-      enabled: !isStudentLoading && !!studentRes,
+      enabled: !isGetStudentLoading && !!studentRes,
     });
 
   return (
     <>
       <Accordion expanded={isAccordionOpen} onChange={handleAccordionToggle}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <Typography sx={{ fontWeight: 500, textTransform: 'uppercase' }}>
-              Project
-            </Typography>
+        <AccordionSummary title="Project">
+          {projectRes && projectRes.data && (
             <Button
               size="small"
               onClick={(ev: React.SyntheticEvent) => {
@@ -55,16 +51,13 @@ export function ProjectDetailsAccordion({
             >
               Edit
             </Button>
-          </Stack>
+          )}
         </AccordionSummary>
-        <AccordionDetails>
-          {isStudentLoading && isProjectLoading ? (
-            <>
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
-            </>
-          ) : !!projectRes && !!projectRes.data ? (
+        <AccordionDetails
+          loading={isGetStudentLoading || isGetProjectLoading}
+          error={isGetStudentError}
+        >
+          {projectRes && projectRes.data ? (
             <Grid container spacing={2}>
               <Grid item xs={3}>
                 <Typography
@@ -127,32 +120,18 @@ export function ProjectDetailsAccordion({
               </Grid>
               <Grid item xs={9}>
                 {projectRes?.data?.specializations.map((specialization) => (
-                  <Typography>- {specialization.title || ' - '}</Typography>
+                  <Typography key={specialization.id}>
+                    - {specialization.title || ' - '}
+                  </Typography>
                 ))}
               </Grid>
             </Grid>
           ) : (
-            <Stack
-              direction="column"
-              alignItems="center"
-              justifyContent="center"
-              spacing={0.5}
-              sx={{ py: 4 }}
-            >
-              <Typography
-                color="text.secondary"
-                variant="body2"
-                sx={{
-                  fontWeight: 500,
-                  textTransform: 'uppercase',
-                }}
-              >
-                No Project Found
-              </Typography>
+            <AccordionEmptyDataBox>
               <Button variant="text" onClick={handleCreateModalToggle}>
                 Create Project
               </Button>
-            </Stack>
+            </AccordionEmptyDataBox>
           )}
         </AccordionDetails>
       </Accordion>

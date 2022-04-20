@@ -1,40 +1,37 @@
-import { Alert, Box, Skeleton } from '@mui/material';
-import { ProfileDetailsAccordion } from '../../profiles';
-import { ProjectDetailsAccordion } from '../../projects';
-import { SupervisorDetailsAccordion } from '../../supervisors';
-import { AccountRole } from '../../../shared/enums/accounts.enum';
 import { useRouter } from 'next/router';
+import { ErrorWrapper } from 'src/components/error-wrapper';
+import { LoadingWrapper } from 'src/components/loading-wrapper';
+import { ProfileDetailsAccordion } from 'src/modules/profiles';
+import { ProjectDetailsAccordion } from 'src/modules/projects';
+import { SupervisorDetailsAccordion } from 'src/modules/supervisors';
+import { AccountRole } from 'src/shared/enums/accounts.enum';
 import { useGetAccountById } from '../accounts.query';
 
 export function AccountDetails() {
   const { query } = useRouter();
 
   const accountId = (query['accountId'] as string) || '';
-  const { data: account, isLoading, isError } = useGetAccountById(accountId);
+  const {
+    data: accountRes,
+    isLoading: isGetAccountLoading,
+    isError: isGetAccountError,
+  } = useGetAccountById(accountId);
 
   return (
-    <Box>
-      {isLoading ? (
-        <>
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-        </>
-      ) : isError || !account || !account.data ? (
-        <>
-          <Alert severity="error">There is something wrong</Alert>
-        </>
-      ) : (
-        <>
-          <ProfileDetailsAccordion accountId={accountId} />
-          {account!.data!.role === AccountRole.STUDENT && (
-            <ProjectDetailsAccordion accountId={accountId} />
-          )}
-          {account!.data!.role === AccountRole.SUPERVISOR && (
-            <SupervisorDetailsAccordion accountId={accountId} />
-          )}
-        </>
-      )}
-    </Box>
+    <LoadingWrapper type="skeleton" loading={isGetAccountLoading}>
+      <ErrorWrapper error={isGetAccountError}>
+        {accountRes && accountRes.data && (
+          <>
+            <ProfileDetailsAccordion accountId={accountId} />
+            {accountRes!.data!.role === AccountRole.STUDENT && (
+              <ProjectDetailsAccordion accountId={accountId} />
+            )}
+            {accountRes!.data!.role === AccountRole.SUPERVISOR && (
+              <SupervisorDetailsAccordion accountId={accountId} />
+            )}
+          </>
+        )}
+      </ErrorWrapper>
+    </LoadingWrapper>
   );
 }

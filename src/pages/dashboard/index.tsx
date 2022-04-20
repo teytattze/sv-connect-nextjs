@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
-import { DashboardLayout } from '../../layouts/dashboard.layout';
-import { RouteGuard } from '../../modules/auth/components/route-guard';
-import { AccountRole } from '../../shared/enums/accounts.enum';
+import { DashboardLayout } from 'src/layouts/dashboard.layout';
+import { RouteGuard } from 'src/modules/auth/components/route-guard';
+import { AccountRole } from 'src/shared/enums/accounts.enum';
 
 export default function DashboardPage() {
   return (

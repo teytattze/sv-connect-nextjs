@@ -1,34 +1,27 @@
+import { Button } from '@mui/material';
+import { DateTime } from 'luxon';
 import {
-  Box,
-  Checkbox,
-  IconButton,
-  Paper,
-  Skeleton,
-  Stack,
   Table,
   TableBody,
+  TableBodyRow,
   TableCell,
-  TableContainer,
   TableHead,
-  TableRow,
-  Typography,
-} from '@mui/material';
-import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import { DateTime } from 'luxon';
-import { LoadingWrapper } from '../../../components/loading-wrapper';
-import { theme } from '../../../styles/theme.style';
+  TableHeadRow,
+  TableActionBar,
+  TableContainer,
+  TableEmptyBox,
+} from 'src/components/table';
 import { useQueryClient } from 'react-query';
 import { useSnackbar } from 'notistack';
+import { ISpecialization } from 'src/shared/interfaces/specializations.interface';
+import { useTableCheckbox } from 'src/hooks/use-table-checkbox.hook';
+import { useToggle } from 'src/hooks/use-toggle.hook';
+import { UpdateSpecializationModal } from './update-specialization-modal';
 import {
   INDEX_SPECIALIZATIONS_QUERY_KEY,
   useBulkDeleteSpecializationsById,
   useIndexSpecializations,
 } from '../specializations.query';
-import { UpdateSpecializationModal } from './update-specialization-modal';
-import { ISpecialization } from '../../../shared/interfaces/specializations.interface';
-import { useTableCheckbox } from '../../../hooks/use-table-checkbox.hook';
-import { useToggle } from '../../../hooks/use-toggle.hook';
 
 export function SpecializationsList() {
   const {
@@ -48,77 +41,41 @@ export function SpecializationsList() {
   } = useTableCheckbox(specializationsRes?.data || []);
 
   return (
-    <LoadingWrapper
+    <TableContainer
       loading={isIndexSpecializationsLoading}
-      type="skeleton"
-      renderSkeleton={() => (
-        <Box sx={{ width: '100%', px: 1 }}>
-          <Skeleton animation="wave" height={32} />
-          <Skeleton animation="wave" height={32} />
-          <Skeleton animation="wave" height={32} />
-          <Skeleton animation="wave" height={32} />
-          <Skeleton animation="wave" height={32} />
-        </Box>
-      )}
+      error={isIndexSpecializationsError}
     >
-      <TableContainer component={Paper}>
-        <SpecializationsListActionsBar
-          selected={selected}
-          resetSelected={resetSelected}
-        />
-        <Table stickyHeader sx={{ width: '100%' }}>
-          <TableHead>
-            <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  color="primary"
-                  indeterminate={allInterminateValue()}
-                  checked={allCheckboxValue()}
-                  onChange={allCheckboxToggle}
-                />
-              </TableCell>
-              <TableCell padding="checkbox"></TableCell>
-              <TableCell>Title</TableCell>
-              <TableCell>Created At</TableCell>
-              <TableCell>Updated At</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {specializationsRes?.data?.map((specialization) => (
-              <SpecializationsListRow
-                key={specialization.id}
-                specialization={specialization}
-                checkboxToggle={checkboxToggle}
-                checkboxValue={checkboxValue}
-              />
-            ))}
-          </TableBody>
-        </Table>
-        {(isIndexSpecializationsError ||
-          !specializationsRes ||
-          !specializationsRes.data) && (
-          <Box
-            sx={{
-              background: theme.palette.grey[100],
-              width: '100%',
-              textAlign: 'center',
-              py: 4,
-            }}
+      <SpecializationsListActionsBar
+        selected={selected}
+        resetSelected={resetSelected}
+      />
+      <Table>
+        <TableHead>
+          <TableHeadRow
+            checkable
+            editable
+            indeterminate={allInterminateValue()}
+            checked={allCheckboxValue()}
+            handleAllCheckboxChange={allCheckboxToggle}
           >
-            <Typography
-              component="h3"
-              variant="body2"
-              color="text.secondary"
-              sx={{
-                fontWeight: 'bold',
-              }}
-            >
-              No data available
-            </Typography>
-          </Box>
-        )}
-      </TableContainer>
-    </LoadingWrapper>
+            <TableCell>Title</TableCell>
+            <TableCell>Created At</TableCell>
+            <TableCell>Updated At</TableCell>
+          </TableHeadRow>
+        </TableHead>
+        <TableBody>
+          {specializationsRes?.data?.map((specialization) => (
+            <SpecializationsListRow
+              key={specialization.id}
+              specialization={specialization}
+              checkboxToggle={checkboxToggle}
+              checkboxValue={checkboxValue}
+            />
+          ))}
+        </TableBody>
+      </Table>
+      {!specializationsRes?.data?.length && <TableEmptyBox />}
+    </TableContainer>
   );
 }
 
@@ -133,23 +90,17 @@ export function SpecializationsListRow({
   checkboxToggle,
   checkboxValue,
 }: ISpecializationsListRowProps) {
-  const { isOpen, toggle } = useToggle();
+  const { isOpen, toggle: handleToggle } = useToggle();
 
   return (
     <>
-      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            checked={checkboxValue(specialization.id)}
-            onChange={() => checkboxToggle(specialization.id)}
-          />
-        </TableCell>
-        <TableCell padding="checkbox" sx={{ textAlign: 'center' }}>
-          <IconButton size="small" onClick={toggle}>
-            <EditRoundedIcon />
-          </IconButton>
-        </TableCell>
+      <TableBodyRow
+        checkable
+        editable
+        checked={checkboxValue(specialization.id)}
+        handleCheckboxChange={() => checkboxToggle(specialization.id)}
+        handleEditClick={handleToggle}
+      >
         <TableCell component="th" scope="row">
           {specialization.title}
         </TableCell>
@@ -159,11 +110,11 @@ export function SpecializationsListRow({
         <TableCell component="th" scope="row">
           {DateTime.fromISO(specialization.updatedAt).toHTTP()}
         </TableCell>
-      </TableRow>
+      </TableBodyRow>
       <UpdateSpecializationModal
         specialization={specialization}
         open={isOpen}
-        handleToggle={toggle}
+        handleToggle={handleToggle}
       />
     </>
   );
@@ -180,7 +131,7 @@ export function SpecializationsListActionsBar({
 }: ISpecializationsListActionBarProps) {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
-  const { mutate: bulkDeleteSpecializations, isLoading } =
+  const { mutate: bulkDeleteSpecializations } =
     useBulkDeleteSpecializationsById({
       onSuccess: () => {
         queryClient.invalidateQueries(INDEX_SPECIALIZATIONS_QUERY_KEY);
@@ -191,24 +142,14 @@ export function SpecializationsListActionsBar({
       },
     });
 
-  if (selected.length === 0) return null;
   return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      sx={{
-        p: 2,
-        background: theme.palette.grey[100],
-      }}
-    >
-      <Typography>{selected.length} Item Selected</Typography>
-      <IconButton
+    <TableActionBar items={selected}>
+      <Button
         color="error"
         onClick={() => bulkDeleteSpecializations({ ids: selected })}
       >
-        <DeleteRoundedIcon color="error" />
-      </IconButton>
-    </Stack>
+        Delete
+      </Button>
+    </TableActionBar>
   );
 }

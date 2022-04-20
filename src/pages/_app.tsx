@@ -1,14 +1,13 @@
-import React from 'react';
-import Head from 'next/head';
-import { AppProps } from 'next/app';
+import { CacheProvider, EmotionCache } from '@emotion/react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { CacheProvider, EmotionCache } from '@emotion/react';
+import { NextPage } from 'next';
+import { AppProps } from 'next/app';
+import Head from 'next/head';
 import { theme } from '../styles/theme.style';
 import { createEmotionCache } from '../lib/emotion.lib';
 import { ReactQueryClientProvider } from '../providers/react-query.provider';
 import { SnackbarProvider } from '../providers/snackbar.provider';
-import { NextPage } from 'next';
 import { AuthProvider } from '../modules/auth';
 
 const clientSideEmotionCache = createEmotionCache();

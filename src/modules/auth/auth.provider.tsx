@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import { IAccount } from '../../shared/interfaces/accounts.interface';
-import { Nullable } from '../../shared/types/common.type';
+import { IAccount } from 'src/shared/interfaces/accounts.interface';
+import { Nullable } from 'src/shared/types/common.type';
 import { useValidateJwt } from './auth.query';
 
 export interface IAuthContextValue {

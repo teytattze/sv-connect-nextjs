@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 
 export interface LoadingWrapperProps {
   loading?: boolean;
@@ -11,7 +11,7 @@ export interface LoadingWrapperProps {
 export function LoadingWrapper({
   loading = false,
   type = 'disable',
-  renderSkeleton,
+  renderSkeleton = defaultSkeleton,
   children,
 }: LoadingWrapperProps) {
   if (type === 'skeleton' && renderSkeleton && loading) {
@@ -26,6 +26,16 @@ export function LoadingWrapper({
       }}
     >
       {children}
+    </Box>
+  );
+}
+
+function defaultSkeleton() {
+  return (
+    <Box sx={{ width: '100%', px: 1 }}>
+      <Skeleton animation="wave" height={32} />
+      <Skeleton animation="wave" height={32} />
+      <Skeleton animation="wave" height={32} />
     </Box>
   );
 }

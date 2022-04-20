@@ -1,4 +1,5 @@
 import { IconButton, ListItemButton, ListItemText, Stack } from '@mui/material';
+import NextLink from 'next/link';
 import { IPath } from '../../lib/routes.lib';
 
 export interface SidebarSectionButtonProps {
@@ -7,22 +8,24 @@ export interface SidebarSectionButtonProps {
 
 export function SidebarSectionButton({ path }: SidebarSectionButtonProps) {
   return (
-    <ListItemButton
-      sx={{
-        borderRadius: 1,
-        p: 0,
-      }}
-    >
-      <Stack
+    <NextLink passHref href={path.path}>
+      <ListItemButton
         sx={{
-          p: 1,
-          mr: 1,
+          borderRadius: 1,
+          p: 0,
         }}
       >
-        {path.Icon}
-      </Stack>
-      <ListItemText primary={path.name} />
-    </ListItemButton>
+        <Stack
+          sx={{
+            p: 1,
+            mr: 1,
+          }}
+        >
+          {path.Icon}
+        </Stack>
+        <ListItemText primary={path.name} />
+      </ListItemButton>
+    </NextLink>
   );
 }
 

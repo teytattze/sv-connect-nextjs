@@ -1,15 +1,13 @@
 import { LoadingButton } from '@mui/lab';
-import { Alert, Box, Modal, Paper, Stack, TextField } from '@mui/material';
+import { Alert, Box, Stack, TextField } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useQueryClient } from 'react-query';
-import { FormTitle } from '../../../components/form-title';
-import { LoadingWrapper } from '../../../components/loading-wrapper';
-import { InvitationStatus } from '../../../shared/enums/invitations.enum';
-import { ICreateInvitationPayload } from '../../../shared/interfaces/invitations.interface';
-import { useAuth } from '../../auth';
-import { useGetStudentByAccountId } from '../../students';
+import { InvitationStatus } from 'src/shared/enums/invitations.enum';
+import { ICreateInvitationPayload } from 'src/shared/interfaces/invitations.interface';
+import { useAuth } from 'src/modules/auth';
+import { useGetStudentByAccountId } from 'src/modules/students';
 import {
   createInvitationValidation,
   createInvitationValue,
@@ -19,6 +17,7 @@ import {
   INDEX_INVITATIONS_QUERY_KEY,
   useCreateInvitation,
 } from '../invitations.query';
+import { FormModal } from 'src/components/form-modal';
 
 interface ICreateInvitationModalProps {
   supervisorId: string;
@@ -73,67 +72,57 @@ export function CreateInvitationModal({
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
-      <Paper
-        sx={{
-          p: 5,
-          my: 12,
-          mx: 'auto',
-          width: '100%',
-          maxWidth: '520px',
-        }}
+    <FormModal
+      title="New Invitation"
+      fetchLoading={isGetStudentLoading}
+      submitLoading={isSubmitLoading}
+      error={isGetStudentError}
+      open={open}
+      handleClose={handleClose}
+    >
+      <form
+        onSubmit={handleSubmit((payload) => {
+          const formattedPayload: ICreateInvitationPayload = {
+            message: payload.message,
+            status: InvitationStatus.PENDING,
+            student: { id: studentRes!.data!.id },
+            supervisor: { id: supervisorId },
+          };
+          updateProfile(formattedPayload);
+        })}
       >
-        <LoadingWrapper loading={isSubmitLoading && isGetStudentLoading}>
-          <FormTitle title="Create Invitation" />
-          {!isGetStudentLoading && isGetStudentError ? (
-            <Alert severity="error">There is something wrong</Alert>
-          ) : (
-            <form
-              onSubmit={handleSubmit((payload) => {
-                const formattedPayload: ICreateInvitationPayload = {
-                  message: payload.message,
-                  status: InvitationStatus.PENDING,
-                  student: { id: studentRes!.data!.id },
-                  supervisor: { id: supervisorId },
-                };
-                updateProfile(formattedPayload);
-              })}
-            >
-              <Box sx={{ my: 5 }}>
-                <Stack direction="column" spacing={2.5}>
-                  {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-                  <Controller
-                    name="message"
-                    control={control}
-                    defaultValue={createInvitationValue.message}
-                    rules={createInvitationValidation.message}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        id="message"
-                        label="Message"
-                        variant="outlined"
-                        multiline
-                        rows={4}
-                        helperText={formErrors.message?.message}
-                        error={!!formErrors.message}
-                      />
-                    )}
-                  />
-                </Stack>
-              </Box>
-              <LoadingButton
-                type="submit"
-                variant="contained"
-                loading={isSubmitLoading}
-                fullWidth
-              >
-                Submit
-              </LoadingButton>
-            </form>
-          )}
-        </LoadingWrapper>
-      </Paper>
-    </Modal>
+        <Box sx={{ my: 5 }}>
+          <Stack direction="column" spacing={2.5}>
+            {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+            <Controller
+              name="message"
+              control={control}
+              defaultValue={createInvitationValue.message}
+              rules={createInvitationValidation.message}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  id="message"
+                  label="Message"
+                  variant="outlined"
+                  multiline
+                  rows={4}
+                  helperText={formErrors.message?.message}
+                  error={!!formErrors.message}
+                />
+              )}
+            />
+          </Stack>
+        </Box>
+        <LoadingButton
+          type="submit"
+          variant="contained"
+          loading={isSubmitLoading}
+          fullWidth
+        >
+          Submit
+        </LoadingButton>
+      </form>
+    </FormModal>
   );
 }

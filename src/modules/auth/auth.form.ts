@@ -1,9 +1,9 @@
 import { RegisterOptions } from 'react-hook-form';
-import { AccountRole } from '../../shared/enums/accounts.enum';
+import { AccountRole } from 'src/shared/enums/accounts.enum';
 import {
   ILoginPayload,
   IRegisterPayload,
-} from '../../shared/interfaces/auth.interface';
+} from 'src/shared/interfaces/auth.interface';
 
 const emailReg =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;

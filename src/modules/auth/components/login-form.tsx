@@ -15,11 +15,11 @@ import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { ILoginPayload } from '../../../shared/interfaces/auth.interface';
-import { useLogin } from '../auth.query';
-import { LoadingWrapper } from '../../../components/loading-wrapper';
-import { FormTitle } from '../../../components/form-title';
+import { ILoginPayload } from 'src/shared/interfaces/auth.interface';
+import { LoadingWrapper } from 'src/components/loading-wrapper';
+import { FormTitle } from 'src/components/form-title';
 import { loginValidation, loginValue } from '../auth.form';
+import { useLogin } from '../auth.query';
 
 export function LoginForm() {
   const [errorMsg, setErrorMsg] = useState<string>('');

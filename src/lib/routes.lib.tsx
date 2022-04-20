@@ -35,60 +35,60 @@ export interface IPath {
 
 export const routes: IRoute[] = [
   {
-    group: 'Overview',
+    group: 'Accounts',
     roles: [],
     paths: [
       {
-        name: 'Profile',
-        path: '/profile',
+        name: 'Accounts',
+        path: '/dashboard/accounts',
         roles: [],
         Icon: <AccountBoxRoundedIcon />,
       },
       {
-        name: 'Project',
-        path: '/project',
+        name: 'Students',
+        path: '/dashboard/students',
         roles: [],
         Icon: <AssignmentRoundedIcon />,
       },
       {
-        name: 'Setting',
-        path: '/setting',
+        name: 'Supervisors',
+        path: '/dashboard/supervisors',
         roles: [],
         Icon: <ManageAccountsRoundedIcon />,
       },
     ],
   },
   {
-    group: 'Account',
+    group: 'Invitation',
     roles: [],
     paths: [
       {
-        name: 'Student',
-        path: '/students',
+        name: 'Incoming',
+        path: '/dashboard/invitations/incoming',
         roles: [],
         Icon: <AssignmentIndRoundedIcon />,
       },
       {
-        name: 'Supervisor',
-        path: '/supervisors',
+        name: 'Outgoing',
+        path: '/dashboard/invitations/outgoing',
         roles: [],
         Icon: <SupervisorAccountRoundedIcon />,
       },
     ],
   },
   {
-    group: 'Administration',
+    group: 'Auto Matching',
     roles: [],
     paths: [
       {
-        name: 'Auto Matching',
-        path: '/auto-matching',
+        name: 'Single',
+        path: '/dashboard/matches/single',
         roles: [],
         Icon: <AutoAwesomeRoundedIcon />,
       },
       {
-        name: 'Summary',
-        path: '/summary',
+        name: 'Multiple',
+        path: '/dashboard/matches/multiple',
         roles: [],
         Icon: <SummarizeRoundedIcon />,
       },

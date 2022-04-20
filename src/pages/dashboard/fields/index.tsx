@@ -1,8 +1,8 @@
 import { Button } from '@mui/material';
 import { useState } from 'react';
-import { DashboardLayout } from '../../../layouts/dashboard.layout';
-import { DashboardPageContainer } from '../../../components/dashboard-page-container';
-import { CreateFieldModal, FieldsList } from '../../../modules/fields';
+import { DashboardPageContainer } from 'src/containers/dashboard-page.container';
+import { DashboardLayout } from 'src/layouts/dashboard.layout';
+import { CreateFieldModal, FieldsList } from 'src/modules/fields';
 
 export default function FieldsListPage() {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { useHasPermission } from '../../../hooks/use-has-permission.hook';
-import { AccountRole } from '../../../shared/enums/accounts.enum';
+import { useHasPermission } from 'src/hooks/use-has-permission.hook';
+import { AccountRole } from 'src/shared/enums/accounts.enum';
 
 interface IRouteGuardProps {
   children: React.ReactNode;
