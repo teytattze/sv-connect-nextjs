@@ -4,8 +4,12 @@ import { ISupervisor } from './supervisors.interface';
 export interface IMatch {
   student: IStudentWithProject;
   supervisor: ISupervisor;
-  isMatch: boolean;
+  isMatched: boolean;
   isApproved: boolean;
+}
+
+export interface IAcceptMatchesPayload {
+  matches: IMatch[];
 }
 
 export interface IMatchSingleStudentPayload {

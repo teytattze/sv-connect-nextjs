@@ -81,18 +81,16 @@ export const theme = createTheme({
     'none',
   ],
   components: {
+    MuiAccordionDetails: {
+      styleOverrides: {
+        root: {
+          borderTop: '1px solid #f1f5f9',
+        },
+      },
+    },
     MuiButton: {
       defaultProps: {
         disableElevation: true,
-      },
-    },
-    MuiCollapse: {
-      styleOverrides: {
-        wrapper: {
-          borderTop: '1px solid #e2e8f0',
-          paddingTop: '0.5rem',
-          paddingBottom: '0.5rem',
-        },
       },
     },
     MuiIconButton: {

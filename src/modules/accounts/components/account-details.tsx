@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { ErrorWrapper } from 'src/components/error-wrapper';
 import { LoadingWrapper } from 'src/components/loading-wrapper';
 import { ProfileDetailsAccordion } from 'src/modules/profiles';
-import { ProjectDetailsAccordion } from 'src/modules/projects';
+import { StudentDetailsAccordion } from 'src/modules/students';
 import { SupervisorDetailsAccordion } from 'src/modules/supervisors';
 import { AccountRole } from 'src/shared/enums/accounts.enum';
 import { useGetAccountById } from '../accounts.query';
@@ -24,7 +24,7 @@ export function AccountDetails() {
           <>
             <ProfileDetailsAccordion accountId={accountId} />
             {accountRes!.data!.role === AccountRole.STUDENT && (
-              <ProjectDetailsAccordion accountId={accountId} />
+              <StudentDetailsAccordion accountId={accountId} />
             )}
             {accountRes!.data!.role === AccountRole.SUPERVISOR && (
               <SupervisorDetailsAccordion accountId={accountId} />

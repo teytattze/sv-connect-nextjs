@@ -1,4 +1,5 @@
-import { Collapse, CollapseProps } from '@mui/material';
+import { Box, Collapse, CollapseProps } from '@mui/material';
+import { theme } from 'src/styles/theme.style';
 import { ErrorWrapper } from '../error-wrapper';
 import { LoadingWrapper } from '../loading-wrapper';
 
@@ -18,10 +19,20 @@ export function TableCollapse({
   ...muiProps
 }: ITableCollapseProps) {
   return (
-    <Collapse in={open} timeout="auto" unmountOnExit {...muiProps}>
-      <LoadingWrapper type="skeleton" loading={loading}>
-        <ErrorWrapper error={error}>{children}</ErrorWrapper>
-      </LoadingWrapper>
+    <Collapse
+      sx={{
+        borderTop: `1px solid ${theme.palette.grey[100]}`,
+      }}
+      in={open}
+      timeout="auto"
+      unmountOnExit
+      {...muiProps}
+    >
+      <Box sx={{ width: '100%', py: 1 }}>
+        <LoadingWrapper type="skeleton" loading={loading}>
+          <ErrorWrapper error={error}>{children}</ErrorWrapper>
+        </LoadingWrapper>
+      </Box>
     </Collapse>
   );
 }

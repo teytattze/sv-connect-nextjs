@@ -12,7 +12,7 @@ import {
 import { useIndexAccounts } from 'src/modules/accounts';
 import { AccountRole } from 'src/shared/enums/accounts.enum';
 
-export function SupervisorsList() {
+export function AccountsSupervisorList() {
   const {
     data: accountsRes,
     isLoading: isIndexAccountsLoading,

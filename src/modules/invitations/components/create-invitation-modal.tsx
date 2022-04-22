@@ -38,8 +38,8 @@ export function CreateInvitationModal({
     data: studentRes,
     isLoading: isGetStudentLoading,
     isError: isGetStudentError,
-  } = useGetStudentByAccountId(account!.id, {
-    enabled: !isLoading && !!account,
+  } = useGetStudentByAccountId(account?.id || '', {
+    enabled: !isLoading && !!account?.id,
   });
 
   const {

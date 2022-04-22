@@ -10,19 +10,29 @@ interface IAccordionDetailsProps
   children: React.ReactNode;
   loading?: boolean;
   error?: boolean;
+  paddingSize?: 'default' | 'none';
 }
 
 export function AccordionDetails({
   children,
+  paddingSize = 'default',
   loading = false,
   error = false,
   ...props
 }: IAccordionDetailsProps) {
   return (
-    <MuiAccordionDetails sx={{ p: 2 }} {...props}>
+    <MuiAccordionDetails sx={{ p: paddingMap[paddingSize] }} {...props}>
       <LoadingWrapper type="skeleton" loading={loading}>
         <ErrorWrapper error={error}>{children}</ErrorWrapper>
       </LoadingWrapper>
     </MuiAccordionDetails>
   );
 }
+
+const paddingMap: Record<
+  NonNullable<IAccordionDetailsProps['paddingSize']>,
+  number
+> = {
+  default: 2,
+  none: 0,
+};

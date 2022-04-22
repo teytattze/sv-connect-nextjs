@@ -6,5 +6,9 @@ interface ITableEmptyBoxProps {
 }
 
 export function TableEmptyBox({ children, message }: ITableEmptyBoxProps) {
-  return <EmptyDataBox message={message}>{children}</EmptyDataBox>;
+  return (
+    <EmptyDataBox backgroundColor="grey" message={message}>
+      {children}
+    </EmptyDataBox>
+  );
 }

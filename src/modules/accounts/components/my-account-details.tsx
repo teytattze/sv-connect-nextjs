@@ -2,7 +2,7 @@ import { ErrorWrapper } from 'src/components/error-wrapper';
 import { LoadingWrapper } from 'src/components/loading-wrapper';
 import { useAuth } from 'src/modules/auth';
 import { ProfileDetailsAccordion } from 'src/modules/profiles';
-import { ProjectDetailsAccordion } from 'src/modules/projects';
+import { StudentDetailsAccordion } from 'src/modules/students';
 import { SupervisorDetailsAccordion } from 'src/modules/supervisors';
 import { AccountRole } from 'src/shared/enums/accounts.enum';
 
@@ -16,7 +16,7 @@ export function MyAccountDetails() {
           <>
             <ProfileDetailsAccordion accountId={account!.id} />
             {account!.role === AccountRole.STUDENT && (
-              <ProjectDetailsAccordion accountId={account!.id} />
+              <StudentDetailsAccordion accountId={account!.id} />
             )}
             {account!.role === AccountRole.SUPERVISOR && (
               <SupervisorDetailsAccordion accountId={account!.id} />

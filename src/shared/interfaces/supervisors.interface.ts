@@ -19,6 +19,12 @@ export interface ISupervisor extends Omit<IBaseSupervisor, 'fieldId'> {
   specializations: IBaseSpecialization[];
 }
 
+export interface IIndexSupervisorsFilter {
+  fieldId?: string;
+  maxCapacity?: number;
+  minCapacity?: number;
+}
+
 export interface ICreateSupervisorPayload {
   capacity?: number;
   account: IConnectAccountPayload;

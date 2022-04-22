@@ -1,13 +1,21 @@
+import { Nullable } from 'src/shared/types/common.type';
 import { useAuth } from '../modules/auth';
 import { AccountRole } from '../shared/enums/accounts.enum';
 
-export function useHasPermission(roles: AccountRole[] = []) {
-  const { account, isLoading } = useAuth();
+interface UseHasPermissionOptions {
+  roles?: AccountRole[];
+  id?: Nullable<string>;
+}
 
+export function useHasPermission({
+  roles = [],
+  id = null,
+}: UseHasPermissionOptions) {
+  const { account } = useAuth();
   const hasPermission = () => {
-    if (account && roles.includes(account.role)) return true;
+    if (account && roles.includes(account.role) && (!id || account.id === id))
+      return true;
     return false;
   };
-
-  return { account, isLoading, hasPermission };
+  return { account, hasPermission };
 }

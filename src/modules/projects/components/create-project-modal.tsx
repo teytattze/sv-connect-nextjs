@@ -140,7 +140,6 @@ export function CreateProjectModal({
                   empty={!fieldsRes?.data?.length}
                   error={!!formErrors.fieldId}
                   helperText={formErrors.fieldId?.message}
-                  multiple
                 >
                   {fieldsRes?.data?.map(({ id, title }) => (
                     <SelectItem key={id} value={id}>

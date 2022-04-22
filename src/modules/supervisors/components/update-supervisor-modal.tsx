@@ -17,7 +17,7 @@ import {
   updateSupervisorValidation,
 } from '../supervisors.form';
 import {
-  GET_SUPERVISOR_BY_ACCUONT_ID_QUERY_KEY,
+  GET_SUPERVISOR_BY_ACCOUNT_ID_QUERY_KEY,
   useUpdateSupervisorById,
 } from '../supervisors.query';
 
@@ -55,7 +55,7 @@ export function UpdateSupervisorModal({
       },
       onSuccess: () => {
         queryClient.invalidateQueries([
-          GET_SUPERVISOR_BY_ACCUONT_ID_QUERY_KEY,
+          GET_SUPERVISOR_BY_ACCOUNT_ID_QUERY_KEY,
           supervisor.accountId,
         ]);
         enqueueSnackbar('Supervisor updated successfully', {
@@ -123,7 +123,6 @@ export function UpdateSupervisorModal({
                   empty={!fieldsRes?.data?.length}
                   error={!!formErrors.fieldId}
                   helperText={formErrors.fieldId?.message}
-                  multiple
                 >
                   {fieldsRes?.data?.map(({ id, title }) => (
                     <SelectItem key={id} value={id}>

@@ -8,7 +8,7 @@ export interface SidebarSectionButtonProps {
 
 export function SidebarSectionButton({ path }: SidebarSectionButtonProps) {
   return (
-    <NextLink passHref href={path.path}>
+    <NextLink href={path.path}>
       <ListItemButton
         sx={{
           borderRadius: 1,

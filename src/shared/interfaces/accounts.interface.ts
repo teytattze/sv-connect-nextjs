@@ -19,4 +19,5 @@ export interface ICreateAccountPayload {
 
 export interface IIndexAccountsFilter {
   role?: AccountRole;
+  hasSupervisor?: boolean;
 }

@@ -126,7 +126,7 @@ export function UpdateProjectModal({
             <Controller
               name="fieldId"
               control={control}
-              defaultValue={project.field.id}
+              defaultValue={project?.field?.id || ''}
               rules={updateProjectValidation.fieldId}
               render={({ field }) => (
                 <Select
@@ -137,7 +137,6 @@ export function UpdateProjectModal({
                   empty={!fieldsRes?.data?.length}
                   error={!!formErrors.fieldId}
                   helperText={formErrors.fieldId?.message}
-                  multiple
                 >
                   {fieldsRes?.data?.map(({ id, title }) => (
                     <SelectItem key={id} value={id}>
@@ -150,7 +149,7 @@ export function UpdateProjectModal({
             <Controller
               name="specializationIds"
               control={control}
-              defaultValue={project.specializations.map(({ id }) => id)}
+              defaultValue={project?.specializations.map(({ id }) => id)}
               render={({ field }) => (
                 <Select
                   {...field}

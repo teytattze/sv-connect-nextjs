@@ -14,6 +14,7 @@ export interface IStudentWithProject extends IStudent {
 }
 
 export interface IIndexStudentsFilter {
-  supervisorId?: string;
+  hasProject?: boolean;
   hasSupervisor?: boolean;
+  supervisorId?: string;
 }

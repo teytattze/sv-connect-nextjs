@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import {
   Accordion,
   AccordionDetails,
@@ -6,8 +6,13 @@ import {
   AccordionSummary,
 } from 'src/components/accordion';
 import { useToggle } from 'src/hooks/use-toggle.hook';
+import { ComponentGuard } from 'src/modules/auth';
 import { CreateInvitationModal } from 'src/modules/invitations';
+import { useIndexStudents } from 'src/modules/students';
+import { StudentsList } from 'src/modules/students';
+import { AccountRole } from 'src/shared/enums/accounts.enum';
 import { useGetSupervisorByAccountId } from '../supervisors.query';
+import { SupervisorDetailsCard } from './supervisor-details-card';
 import { UpdateSupervisorModal } from './update-supervisor-modal';
 
 interface ISupervisorDetailsAccordionProps {
@@ -17,8 +22,14 @@ interface ISupervisorDetailsAccordionProps {
 export function SupervisorDetailsAccordion({
   accountId,
 }: ISupervisorDetailsAccordionProps) {
-  const { isOpen: isAccordionOpen, toggle: handleAccordionToggle } =
-    useToggle(true);
+  const {
+    isOpen: isSupervisorDetailsAccordionOpen,
+    toggle: handleSupervisorDetailsAccordionToggle,
+  } = useToggle(true);
+  const {
+    isOpen: isSupervisorStudentsAccordionOpen,
+    toggle: handleSupervisorStudentsAccordionToggle,
+  } = useToggle(true);
   const { isOpen: isUpdateModalOpen, toggle: handleUpdateModalToggle } =
     useToggle();
   const { isOpen: isInviteModalOpen, toggle: handleInviteModalToggle } =
@@ -29,96 +40,78 @@ export function SupervisorDetailsAccordion({
     isLoading: isGetSupervisorLoading,
     isError: isGetSupervisorError,
   } = useGetSupervisorByAccountId(accountId, {
-    enabled: !!accountId && isAccordionOpen,
+    enabled: !!accountId && isSupervisorDetailsAccordionOpen,
   });
+
+  const {
+    data: studentsRes,
+    isLoading: isIndexStudentsLoading,
+    isError: isIndexStudentsError,
+  } = useIndexStudents(
+    { supervisorId: supervisorRes?.data?.id },
+    {
+      enabled:
+        !!supervisorRes &&
+        !!supervisorRes.data &&
+        isSupervisorStudentsAccordionOpen,
+    }
+  );
 
   return (
     <>
-      <Accordion expanded={isAccordionOpen} onChange={handleAccordionToggle}>
+      <Accordion
+        expanded={isSupervisorDetailsAccordionOpen}
+        onChange={handleSupervisorDetailsAccordionToggle}
+      >
         <AccordionSummary title="Supervisor">
-          <Button
-            size="small"
-            onClick={(ev: React.SyntheticEvent) => {
-              ev.stopPropagation();
-              handleUpdateModalToggle();
-            }}
-          >
-            Edit
-          </Button>
-          <Button
-            size="small"
-            onClick={(ev: React.SyntheticEvent) => {
-              ev.stopPropagation();
-              handleInviteModalToggle();
-            }}
-          >
-            Invite
-          </Button>
+          <ComponentGuard roles={[AccountRole.SUPERVISOR]} id={accountId}>
+            <Button
+              size="small"
+              onClick={(ev: React.SyntheticEvent) => {
+                ev.stopPropagation();
+                handleUpdateModalToggle();
+              }}
+            >
+              Edit
+            </Button>
+          </ComponentGuard>
+          <ComponentGuard roles={[AccountRole.STUDENT]}>
+            <Button
+              size="small"
+              onClick={(ev: React.SyntheticEvent) => {
+                ev.stopPropagation();
+                handleInviteModalToggle();
+              }}
+            >
+              Invite
+            </Button>
+          </ComponentGuard>
         </AccordionSummary>
         <AccordionDetails
           loading={isGetSupervisorLoading}
           error={isGetSupervisorError}
         >
           {supervisorRes && supervisorRes.data ? (
-            <Grid container spacing={2}>
-              <Grid item xs={3}>
-                <Typography
-                  color="text.secondary"
-                  variant="body2"
-                  sx={{
-                    fontWeight: 500,
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  Capacity
-                </Typography>
-              </Grid>
-              <Grid item xs={9}>
-                <Typography>{supervisorRes?.data?.capacity}</Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography
-                  color="text.secondary"
-                  variant="body2"
-                  sx={{
-                    fontWeight: 500,
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  Field
-                </Typography>
-              </Grid>
-              <Grid item xs={9}>
-                <Typography>
-                  {supervisorRes?.data?.field?.title || ' - '}
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography
-                  color="text.secondary"
-                  variant="body2"
-                  sx={{
-                    fontWeight: 500,
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  Specializations
-                </Typography>
-              </Grid>
-              <Grid item xs={9}>
-                {supervisorRes?.data?.specializations.length === 0 && (
-                  <Typography> - </Typography>
-                )}
-                {supervisorRes?.data?.specializations.map((specialization) => (
-                  <Typography key={specialization.id}>
-                    - {specialization.title}
-                  </Typography>
-                ))}
-              </Grid>
-            </Grid>
+            <SupervisorDetailsCard
+              disabledTitle
+              supervisor={supervisorRes.data}
+            />
           ) : (
             <AccordionEmptyDataBox />
           )}
+        </AccordionDetails>
+      </Accordion>
+      <Accordion
+        expanded={isSupervisorStudentsAccordionOpen}
+        onChange={handleSupervisorStudentsAccordionToggle}
+      >
+        <AccordionSummary title="Students" />
+        <AccordionDetails
+          paddingSize="none"
+          loading={isIndexStudentsLoading}
+          error={isIndexStudentsError}
+        >
+          <StudentsList students={studentsRes?.data || []} />
         </AccordionDetails>
       </Accordion>
       {supervisorRes && supervisorRes.data && (

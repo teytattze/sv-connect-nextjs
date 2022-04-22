@@ -1,4 +1,5 @@
-import { Button, Grid, Stack, Typography } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { Stack } from '@mui/material';
 import { DateTime } from 'luxon';
 import { useSnackbar } from 'notistack';
 import { useQueryClient } from 'react-query';
@@ -17,7 +18,10 @@ import {
 import { useTableCheckbox } from 'src/hooks/use-table-checkbox.hook';
 import { useToggle } from 'src/hooks/use-toggle.hook';
 import { useAuth } from 'src/modules/auth';
-import { useGetProjectByStudentId } from 'src/modules/projects';
+import {
+  ProjectDetailsCard,
+  useGetProjectByStudentId,
+} from 'src/modules/projects';
 import { useGetSupervisorByAccountId } from 'src/modules/supervisors';
 import { InvitationStatus } from 'src/shared/enums/invitations.enum';
 import { IInvitation } from 'src/shared/interfaces/invitations.interface';
@@ -100,7 +104,7 @@ export function IncomingInvitationsList() {
           ))}
         </TableBody>
       </Table>
-      {(!invitationsRes || invitationsRes.data) && <TableEmptyBox />}
+      {!invitationsRes?.data?.length && <TableEmptyBox />}
     </TableContainer>
   );
 }
@@ -154,83 +158,13 @@ export function IncomingInvitationsListRow({
       </TableBodyRow>
       <TableBodyRow>
         <TableCell sx={{ p: 0 }} colSpan={7}>
-          <TableCollapse
-            open={isOpen}
-            loading={isGetProjectLoading}
-            error={isGetProjectError}
-          >
-            <Stack sx={{ px: 8, py: 1 }} spacing={1}>
-              <Typography variant="h6" component="h3">
-                Project
-              </Typography>
-              <Grid container rowSpacing={0.5}>
-                <Grid item xs={3}>
-                  <Typography
-                    color="text.secondary"
-                    variant="body2"
-                    sx={{
-                      fontWeight: 500,
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    Title
-                  </Typography>
-                </Grid>
-                <Grid item xs={9}>
-                  <Typography>{projectRes?.data?.title || ' - '}</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography
-                    color="text.secondary"
-                    variant="body2"
-                    sx={{
-                      fontWeight: 500,
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    Summary
-                  </Typography>
-                </Grid>
-                <Grid item xs={9}>
-                  <Typography>{projectRes?.data?.summary || ' - '}</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography
-                    color="text.secondary"
-                    variant="body2"
-                    sx={{
-                      fontWeight: 500,
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    Field
-                  </Typography>
-                </Grid>
-                <Grid item xs={9}>
-                  <Typography>
-                    {projectRes?.data?.field.title || ' - '}
-                  </Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography
-                    color="text.secondary"
-                    variant="body2"
-                    sx={{
-                      fontWeight: 500,
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    Specializations
-                  </Typography>
-                </Grid>
-                <Grid item xs={9}>
-                  {projectRes?.data?.specializations.map((specialization) => (
-                    <Typography key={specialization.id}>
-                      - {specialization.title || ' - '}
-                    </Typography>
-                  ))}
-                </Grid>
-              </Grid>
+          <TableCollapse open={isOpen}>
+            <Stack sx={{ px: 2, py: 1 }} spacing={1}>
+              <ProjectDetailsCard
+                loading={isGetProjectLoading}
+                error={isGetProjectError}
+                project={projectRes?.data || null}
+              />
             </Stack>
           </TableCollapse>
         </TableCell>
@@ -252,7 +186,18 @@ export function InvitationsListActionsBar({
 }: IFieldsListActionBarProps) {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
-  const { mutate: bulkDeleteFields } = useBulkRejectInvitationsById({
+  const {
+    mutate: bulkRejectInvitations,
+    isLoading: isBulkRejectInvitationLoading,
+  } = useBulkRejectInvitationsById({
+    onError: ({ response }) => {
+      if (response?.data.message)
+        enqueueSnackbar(response?.data.message, { variant: 'error' });
+      else
+        enqueueSnackbar('There is something unexpected happened', {
+          variant: 'error',
+        });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries([
         INDEX_INVITATIONS_QUERY_KEY,
@@ -261,45 +206,51 @@ export function InvitationsListActionsBar({
       enqueueSnackbar('Invitations rejected successfully', {
         variant: 'success',
       });
-      resetSelected();
     },
+    onSettled: () => resetSelected(),
   });
 
-  const { mutate: acceptInvitation } = useAcceptInvitationById({
-    onSuccess: () => {
-      queryClient.invalidateQueries([
-        INDEX_INVITATIONS_QUERY_KEY,
-        { supervisorId },
-      ]);
-      enqueueSnackbar('Invitations accepted successfully', {
-        variant: 'success',
-      });
-      resetSelected();
-    },
-  });
-
-  const handleBulkDelete = () => {
-    bulkDeleteFields({ ids: selected });
-  };
-
-  const handleAcceptInvitation = () => {
-    acceptInvitation(selected[0]);
-  };
+  const { mutate: acceptInvitation, isLoading: isAcceptInvitationLoading } =
+    useAcceptInvitationById({
+      onError: ({ response }) => {
+        if (response?.data.message)
+          enqueueSnackbar(response?.data.message, { variant: 'error' });
+        else
+          enqueueSnackbar('There is something unexpected happened', {
+            variant: 'error',
+          });
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries([
+          INDEX_INVITATIONS_QUERY_KEY,
+          { supervisorId },
+        ]);
+        enqueueSnackbar('Invitations accepted successfully', {
+          variant: 'success',
+        });
+      },
+      onSettled: () => resetSelected(),
+    });
 
   if (selected.length === 0) return null;
   return (
     <TableActionBar items={selected}>
       <Stack direction="row" alignItems="center" spacing={1}>
-        <Button
+        <LoadingButton
           color="success"
           disabled={selected.length > 1}
-          onClick={handleAcceptInvitation}
+          onClick={() => acceptInvitation(selected[0])}
+          loading={isAcceptInvitationLoading || isBulkRejectInvitationLoading}
         >
           Accept
-        </Button>
-        <Button color="error" onClick={handleBulkDelete}>
+        </LoadingButton>
+        <LoadingButton
+          color="error"
+          onClick={() => bulkRejectInvitations({ ids: selected })}
+          loading={isAcceptInvitationLoading || isBulkRejectInvitationLoading}
+        >
           Reject
-        </Button>
+        </LoadingButton>
       </Stack>
     </TableActionBar>
   );

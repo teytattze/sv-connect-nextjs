@@ -7,16 +7,58 @@ import {
 } from 'react-query';
 import {
   getSupervisorByAccountId,
+  getSupervisorById,
+  indexSupervisors,
   updateSupervisorById,
-} from '../../services/supervisors.service';
-import { ICoreHttpResponse } from '../../shared/interfaces/http-response.interface';
+} from 'src/services/supervisors.service';
+import { ICoreHttpResponse } from 'src/shared/interfaces/http-response.interface';
 import {
+  IIndexSupervisorsFilter,
   ISupervisor,
   IUpdateSupervisorPayload,
-} from '../../shared/interfaces/supervisors.interface';
+} from 'src/shared/interfaces/supervisors.interface';
 
-export const GET_SUPERVISOR_BY_ACCUONT_ID_QUERY_KEY =
+export const INDEX_SUPERVISORS_QUERY_KEY = 'indexSupervisors';
+export const GET_SUPERVISOR_BY_ID_QUERY_KEY = 'getSupervisorById';
+export const GET_SUPERVISOR_BY_ACCOUNT_ID_QUERY_KEY =
   'getSupervisorByAccountId';
+
+export function useIndexSupervisors(
+  filter?: IIndexSupervisorsFilter,
+  options?: Omit<
+    UseQueryOptions<
+      ICoreHttpResponse<ISupervisor[]>,
+      AxiosError<ICoreHttpResponse<null>>,
+      ICoreHttpResponse<ISupervisor[]>
+    >,
+    'queryKey' | 'queryFn'
+  >
+) {
+  return useQuery(
+    [GET_SUPERVISOR_BY_ID_QUERY_KEY, filter],
+    () => indexSupervisors(filter),
+    options
+  );
+}
+
+export function useGetSupervisorById(
+  id: string,
+  options?: Omit<
+    UseQueryOptions<
+      ICoreHttpResponse<ISupervisor>,
+      AxiosError<ICoreHttpResponse<null>>,
+      ICoreHttpResponse<ISupervisor>,
+      string[]
+    >,
+    'queryKey' | 'queryFn'
+  >
+) {
+  return useQuery(
+    [GET_SUPERVISOR_BY_ID_QUERY_KEY, id],
+    () => getSupervisorById(id),
+    options
+  );
+}
 
 export function useGetSupervisorByAccountId(
   accountId: string,
@@ -31,7 +73,7 @@ export function useGetSupervisorByAccountId(
   >
 ) {
   return useQuery(
-    [GET_SUPERVISOR_BY_ACCUONT_ID_QUERY_KEY, accountId],
+    [GET_SUPERVISOR_BY_ACCOUNT_ID_QUERY_KEY, accountId],
     () => getSupervisorByAccountId(accountId),
     options
   );

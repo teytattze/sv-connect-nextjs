@@ -2,6 +2,8 @@ import { Box, Divider, Drawer, Paper, Stack, Typography } from '@mui/material';
 import { SidebarSection, SidebarSectionMinimize } from './sidebar-section';
 import { useWindowSize } from '../../hooks/use-window-size.hook';
 import { IRoute } from '../../lib/routes.lib';
+import { theme } from 'src/styles/theme.style';
+import { ComponentGuard } from 'src/modules/auth';
 
 export enum SidebarType {
   DEFAULT = 'DEFAULT',
@@ -101,13 +103,19 @@ export function Sidebar({ isOpen, routes, type, handleToggle }: SidebarProps) {
           spacing={2.5}
           sx={{
             width: '100%',
+            height: `calc(${height}px - 9rem)`,
+            // overflowY: 'scroll',
           }}
         >
           {routes.map((route) =>
             type === SidebarType.DEFAULT ? (
-              <SidebarSection key={route.group} route={route} />
+              <ComponentGuard key={route.group} roles={route.roles}>
+                <SidebarSection route={route} />
+              </ComponentGuard>
             ) : (
-              <SidebarSectionMinimize key={route.group} route={route} />
+              <ComponentGuard key={route.group} roles={route.roles}>
+                <SidebarSectionMinimize route={route} />
+              </ComponentGuard>
             )
           )}
         </Stack>

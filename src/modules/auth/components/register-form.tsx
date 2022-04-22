@@ -26,8 +26,10 @@ import { AccountRole } from 'src/shared/enums/accounts.enum';
 import { IRegisterPayload } from 'src/shared/interfaces/auth.interface';
 import { registerValidation, registerValue } from '../auth.form';
 import { useRegister } from '../auth.query';
+import { useAuth } from '../auth.provider';
 
 export function RegisterForm() {
+  const { revalidateAccount } = useAuth();
   const [errorMsg, setErrorMsg] = useState<string>('');
   const { enqueueSnackbar } = useSnackbar();
   const { push } = useRouter();
@@ -44,8 +46,9 @@ export function RegisterForm() {
       else setErrorMsg('There is something unexpected happened');
     },
     onSuccess: () => {
+      revalidateAccount();
       enqueueSnackbar('Register successfully', { variant: 'success' });
-      push('/dashboard', undefined, { shallow: false });
+      push('/dashboard');
     },
   });
 

@@ -2,10 +2,10 @@ import { IconButton, Paper, Stack, Typography } from '@mui/material';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import NotesRoundedIcon from '@mui/icons-material/NotesRounded';
-import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
 import { useLogout } from '../modules/auth/auth.query';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
+import { useAuth } from 'src/modules/auth';
 
 export interface INavbarProps {
   title: string;
@@ -13,10 +13,12 @@ export interface INavbarProps {
 }
 
 export function Navbar({ title, handleToggle }: INavbarProps) {
+  const { revalidateAccount } = useAuth();
   const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const { mutate: logout } = useLogout({
     onSettled: () => {
+      revalidateAccount();
       enqueueSnackbar('Logout successfully', { variant: 'success' });
       push('/');
     },

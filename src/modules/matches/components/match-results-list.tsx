@@ -11,72 +11,86 @@ import {
   TableHeadRow,
 } from 'src/components/table';
 import { useToggle } from 'src/hooks/use-toggle.hook';
-import { formateDateTime } from 'src/lib/datetime.lib';
 import {
   ProjectDetailsCard,
   useGetProjectByStudentId,
 } from 'src/modules/projects';
+import { useGetSupervisorById } from 'src/modules/supervisors';
+import { SupervisorDetailsCard } from 'src/modules/supervisors/components/supervisor-details-card';
 import { IStudent } from 'src/shared/interfaces/students.interface';
+import { useIndexStudents } from 'src/modules/students';
 
-interface IStudentsListProps {
-  loading?: boolean;
-  error?: boolean;
-  students: IStudent[];
-}
+export function MatchResultsList() {
+  const {
+    data: studentsRes,
+    isLoading: isIndexStudentsLoading,
+    isError: isIndexStudentsError,
+  } = useIndexStudents({
+    hasProject: true,
+    hasSupervisor: true,
+  });
 
-export function StudentsList({
-  loading = false,
-  error = false,
-  students,
-}: IStudentsListProps) {
   return (
-    <TableContainer loading={loading} error={error}>
+    <TableContainer
+      loading={isIndexStudentsLoading}
+      error={isIndexStudentsError}
+    >
       <Table>
         <TableHead>
           <TableHeadRow expandable>
             <TableCell>Student ID</TableCell>
-            <TableCell>Created At</TableCell>
-            <TableCell>Updated At</TableCell>
+            <TableCell>Supervisor ID</TableCell>
           </TableHeadRow>
         </TableHead>
         <TableBody>
-          {students.map((student) => (
-            <StudentsListRow key={student.id} student={student} />
+          {studentsRes?.data?.map((student) => (
+            <MatchResultsListRow key={student.id} student={student} />
           ))}
         </TableBody>
       </Table>
-      {!students.length && <TableEmptyBox />}
+      {!studentsRes?.data?.length && <TableEmptyBox />}
     </TableContainer>
   );
 }
 
-interface IStudentListRowProps {
+interface IMatchResultsListRowProps {
   student: IStudent;
 }
 
-export function StudentsListRow({ student }: IStudentListRowProps) {
+function MatchResultsListRow({ student }: IMatchResultsListRowProps) {
   const { isOpen, toggle: handleToggle } = useToggle();
   const {
     data: projectRes,
     isLoading: isGetProjectLoading,
     isError: isGetProjectError,
   } = useGetProjectByStudentId(student.id);
+  const {
+    data: supervisorRes,
+    isLoading: isGetSupervisorLoading,
+    isError: isGetSupervisorError,
+  } = useGetSupervisorById(student.supervisorId!, {
+    enabled: !!student.supervisorId,
+  });
 
   return (
     <>
       <TableBodyRow expandable handleExpandClick={handleToggle}>
         <TableCell>{student.id}</TableCell>
-        <TableCell>{formateDateTime(student.createdAt)}</TableCell>
-        <TableCell>{formateDateTime(student.updatedAt)}</TableCell>
+        <TableCell>{student.supervisorId || ' - '}</TableCell>
       </TableBodyRow>
       <TableBodyRow>
-        <TableCell sx={{ p: 0 }} colSpan={4}>
+        <TableCell sx={{ p: 0 }} colSpan={3}>
           <TableCollapse open={isOpen}>
             <Stack sx={{ px: 2, py: 1 }} spacing={3}>
               <ProjectDetailsCard
                 loading={isGetProjectLoading}
                 error={isGetProjectError}
                 project={projectRes?.data || null}
+              />
+              <SupervisorDetailsCard
+                loading={isGetSupervisorLoading}
+                error={isGetSupervisorError}
+                supervisor={supervisorRes?.data || null}
               />
             </Stack>
           </TableCollapse>

@@ -1,4 +1,5 @@
 import { Stack, Typography } from '@mui/material';
+import { ComponentGuard } from 'src/modules/auth';
 import { IRoute } from '../../lib/routes.lib';
 import {
   SidebarSectionButton,
@@ -34,7 +35,9 @@ export function SidebarSection({ route }: SidebarSectionProps) {
       </Typography>
       <Stack direction="column" alignItems="justify-start" spacing={0.5}>
         {route.paths.map((path) => (
-          <SidebarSectionButton key={path.name} path={path} />
+          <ComponentGuard key={path.name} roles={path.roles}>
+            <SidebarSectionButton key={path.name} path={path} />
+          </ComponentGuard>
         ))}
       </Stack>
     </Stack>
@@ -66,7 +69,9 @@ export function SidebarSectionMinimize({ route }: SidebarSectionProps) {
       </Typography>
       <Stack direction="column" alignItems="justify-start" spacing={0.5}>
         {route.paths.map((path) => (
-          <SidebarSectionButtonMinimize key={path.name} path={path} />
+          <ComponentGuard key={path.name} roles={path.roles}>
+            <SidebarSectionButtonMinimize path={path} />
+          </ComponentGuard>
         ))}
       </Stack>
     </Stack>

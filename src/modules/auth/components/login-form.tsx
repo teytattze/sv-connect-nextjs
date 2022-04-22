@@ -20,8 +20,10 @@ import { LoadingWrapper } from 'src/components/loading-wrapper';
 import { FormTitle } from 'src/components/form-title';
 import { loginValidation, loginValue } from '../auth.form';
 import { useLogin } from '../auth.query';
+import { useAuth } from '../auth.provider';
 
 export function LoginForm() {
+  const { revalidateAccount } = useAuth();
   const [errorMsg, setErrorMsg] = useState<string>('');
   const { enqueueSnackbar } = useSnackbar();
   const { push } = useRouter();
@@ -38,6 +40,7 @@ export function LoginForm() {
       else setErrorMsg('There is something unexpected happened');
     },
     onSuccess: () => {
+      revalidateAccount();
       enqueueSnackbar('Login successfully', { variant: 'success' });
       push('/dashboard');
     },

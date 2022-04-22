@@ -1,7 +1,11 @@
 import AccountBoxRoundedIcon from '@mui/icons-material/AccountBoxRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
+import AutoFixNormalRoundedIcon from '@mui/icons-material/AutoFixNormalRounded';
+import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import AssignmentIndRoundedIcon from '@mui/icons-material/AssignmentIndRounded';
+import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
+import CasesRoundedIcon from '@mui/icons-material/CasesRounded';
 import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded';
 import SummarizeRoundedIcon from '@mui/icons-material/SummarizeRounded';
 import SupervisorAccountRoundedIcon from '@mui/icons-material/SupervisorAccountRounded';
@@ -36,61 +40,85 @@ export interface IPath {
 export const routes: IRoute[] = [
   {
     group: 'Accounts',
-    roles: [],
+    roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR, AccountRole.ADMIN],
     paths: [
       {
         name: 'Accounts',
         path: '/dashboard/accounts',
-        roles: [],
+        roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR, AccountRole.ADMIN],
         Icon: <AccountBoxRoundedIcon />,
       },
       {
         name: 'Students',
-        path: '/dashboard/students',
-        roles: [],
+        path: '/dashboard/accounts/student',
+        roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR, AccountRole.ADMIN],
         Icon: <AssignmentRoundedIcon />,
       },
       {
         name: 'Supervisors',
-        path: '/dashboard/supervisors',
-        roles: [],
+        path: '/dashboard/accounts/supervisor',
+        roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR, AccountRole.ADMIN],
         Icon: <ManageAccountsRoundedIcon />,
       },
     ],
   },
   {
     group: 'Invitation',
-    roles: [],
+    roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR],
     paths: [
       {
         name: 'Incoming',
         path: '/dashboard/invitations/incoming',
-        roles: [],
+        roles: [AccountRole.SUPERVISOR],
         Icon: <AssignmentIndRoundedIcon />,
       },
       {
         name: 'Outgoing',
         path: '/dashboard/invitations/outgoing',
-        roles: [],
+        roles: [AccountRole.STUDENT],
         Icon: <SupervisorAccountRoundedIcon />,
       },
     ],
   },
   {
     group: 'Auto Matching',
-    roles: [],
+    roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR, AccountRole.ADMIN],
     paths: [
       {
-        name: 'Single',
-        path: '/dashboard/matches/single',
-        roles: [],
-        Icon: <AutoAwesomeRoundedIcon />,
+        name: 'Students',
+        path: '/dashboard/matches/students',
+        roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR, AccountRole.ADMIN],
+        Icon: <AutoFixNormalRoundedIcon />,
       },
       {
-        name: 'Multiple',
-        path: '/dashboard/matches/multiple',
-        roles: [],
+        name: 'Students & Supervisors',
+        path: '/dashboard/matches/students-and-supervisors',
+        roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR, AccountRole.ADMIN],
+        Icon: <AutoFixHighRoundedIcon />,
+      },
+      {
+        name: 'Report',
+        path: '/dashboard/matches/report',
+        roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR, AccountRole.ADMIN],
         Icon: <SummarizeRoundedIcon />,
+      },
+    ],
+  },
+  {
+    group: 'Others',
+    roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR, AccountRole.ADMIN],
+    paths: [
+      {
+        name: 'Fields',
+        path: '/dashboard/fields',
+        roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR, AccountRole.ADMIN],
+        Icon: <CasesRoundedIcon />,
+      },
+      {
+        name: 'Specializations',
+        path: '/dashboard/specializations',
+        roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR, AccountRole.ADMIN],
+        Icon: <CategoryRoundedIcon />,
       },
     ],
   },
