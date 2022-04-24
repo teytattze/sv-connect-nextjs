@@ -9,6 +9,7 @@ import {
   TableContainer,
   TableEmptyBox,
 } from 'src/components/table';
+import { formatDateTime } from 'src/lib/datetime.lib';
 import { useIndexAccounts } from 'src/modules/accounts';
 import { AccountRole } from 'src/shared/enums/accounts.enum';
 
@@ -46,8 +47,8 @@ export function AccountsStudentList() {
               <TableCell>
                 {account.emailVerified ? 'Verified' : 'Not Verified'}
               </TableCell>
-              <TableCell>{account.createdAt}</TableCell>
-              <TableCell>{account.updatedAt}</TableCell>
+              <TableCell>{formatDateTime(account.createdAt)}</TableCell>
+              <TableCell>{formatDateTime(account.updatedAt)}</TableCell>
             </TableBodyRow>
           ))}
         </TableBody>

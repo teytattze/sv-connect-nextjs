@@ -87,13 +87,13 @@ export const routes: IRoute[] = [
       {
         name: 'Students',
         path: '/dashboard/matches/students',
-        roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR, AccountRole.ADMIN],
+        roles: [AccountRole.ADMIN],
         Icon: <AutoFixNormalRoundedIcon />,
       },
       {
         name: 'Students & Supervisors',
         path: '/dashboard/matches/students-and-supervisors',
-        roles: [AccountRole.STUDENT, AccountRole.SUPERVISOR, AccountRole.ADMIN],
+        roles: [AccountRole.ADMIN],
         Icon: <AutoFixHighRoundedIcon />,
       },
       {

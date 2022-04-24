@@ -1,5 +1,4 @@
 import { Button } from '@mui/material';
-import { DateTime } from 'luxon';
 import {
   Table,
   TableBody,
@@ -22,8 +21,14 @@ import { IField } from 'src/shared/interfaces/fields.interface';
 import { useTableCheckbox } from 'src/hooks/use-table-checkbox.hook';
 import { useToggle } from 'src/hooks/use-toggle.hook';
 import { UpdateFieldModal } from './update-field-modal';
+import { useHasPermission } from 'src/hooks/use-has-permission.hook';
+import { AccountRole } from 'src/shared/enums/accounts.enum';
+import { formatDateTime } from 'src/lib/datetime.lib';
 
 export function FieldsList() {
+  const { hasPermission } = useHasPermission({
+    roles: [AccountRole.ADMIN],
+  });
   const {
     data: fieldsRes,
     isLoading: isIndexFieldsLoading,
@@ -45,8 +50,8 @@ export function FieldsList() {
       <Table>
         <TableHead>
           <TableHeadRow
-            checkable
-            editable
+            checkable={hasPermission()}
+            editable={hasPermission()}
             indeterminate={allInterminateValue()}
             checked={allCheckboxValue()}
             handleAllCheckboxChange={allCheckboxToggle}
@@ -84,12 +89,15 @@ export function FieldsListRow({
   checkboxValue,
 }: IFieldsListRowProps) {
   const { isOpen, toggle: handleToggle } = useToggle();
+  const { hasPermission } = useHasPermission({
+    roles: [AccountRole.ADMIN],
+  });
 
   return (
     <>
       <TableBodyRow
-        checkable
-        editable
+        checkable={hasPermission()}
+        editable={hasPermission()}
         checked={checkboxValue(field.id)}
         handleCheckboxChange={() => checkboxToggle(field.id)}
         handleEditClick={handleToggle}
@@ -98,10 +106,10 @@ export function FieldsListRow({
           {field.title}
         </TableCell>
         <TableCell component="th" scope="row">
-          {DateTime.fromISO(field.createdAt).toHTTP()}
+          {formatDateTime(field.createdAt)}
         </TableCell>
         <TableCell component="th" scope="row">
-          {DateTime.fromISO(field.updatedAt).toHTTP()}
+          {formatDateTime(field.updatedAt)}
         </TableCell>
       </TableBodyRow>
       <UpdateFieldModal

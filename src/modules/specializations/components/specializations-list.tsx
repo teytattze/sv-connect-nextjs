@@ -1,5 +1,4 @@
 import { Button } from '@mui/material';
-import { DateTime } from 'luxon';
 import {
   Table,
   TableBody,
@@ -22,8 +21,15 @@ import {
   useBulkDeleteSpecializationsById,
   useIndexSpecializations,
 } from '../specializations.query';
+import { useHasPermission } from 'src/hooks/use-has-permission.hook';
+import { AccountRole } from 'src/shared/enums/accounts.enum';
+import { formatDateTime } from 'src/lib/datetime.lib';
 
 export function SpecializationsList() {
+  const { hasPermission } = useHasPermission({
+    roles: [AccountRole.ADMIN],
+  });
+
   const {
     data: specializationsRes,
     isLoading: isIndexSpecializationsLoading,
@@ -52,8 +58,8 @@ export function SpecializationsList() {
       <Table>
         <TableHead>
           <TableHeadRow
-            checkable
-            editable
+            checkable={hasPermission()}
+            editable={hasPermission()}
             indeterminate={allInterminateValue()}
             checked={allCheckboxValue()}
             handleAllCheckboxChange={allCheckboxToggle}
@@ -91,12 +97,15 @@ export function SpecializationsListRow({
   checkboxValue,
 }: ISpecializationsListRowProps) {
   const { isOpen, toggle: handleToggle } = useToggle();
+  const { hasPermission } = useHasPermission({
+    roles: [AccountRole.ADMIN],
+  });
 
   return (
     <>
       <TableBodyRow
-        checkable
-        editable
+        checkable={hasPermission()}
+        editable={hasPermission()}
         checked={checkboxValue(specialization.id)}
         handleCheckboxChange={() => checkboxToggle(specialization.id)}
         handleEditClick={handleToggle}
@@ -105,10 +114,10 @@ export function SpecializationsListRow({
           {specialization.title}
         </TableCell>
         <TableCell component="th" scope="row">
-          {DateTime.fromISO(specialization.createdAt).toHTTP()}
+          {formatDateTime(specialization.createdAt)}
         </TableCell>
         <TableCell component="th" scope="row">
-          {DateTime.fromISO(specialization.updatedAt).toHTTP()}
+          {formatDateTime(specialization.updatedAt)}
         </TableCell>
       </TableBodyRow>
       <UpdateSpecializationModal

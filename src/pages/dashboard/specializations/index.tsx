@@ -6,6 +6,8 @@ import {
   CreateSpecializationModal,
   SpecializationsList,
 } from 'src/modules/specializations';
+import { ComponentGuard } from 'src/modules/auth';
+import { AccountRole } from 'src/shared/enums/accounts.enum';
 
 export default function SpecializationsListPage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,9 +20,11 @@ export default function SpecializationsListPage() {
     <DashboardPageContainer
       title="Specializations List"
       sideButton={
-        <Button variant="outlined" onClick={handleToggle}>
-          New Specialization
-        </Button>
+        <ComponentGuard roles={[AccountRole.ADMIN]}>
+          <Button variant="outlined" onClick={handleToggle}>
+            New Specialization
+          </Button>
+        </ComponentGuard>
       }
     >
       <SpecializationsList />

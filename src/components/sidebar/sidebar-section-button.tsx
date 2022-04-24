@@ -32,5 +32,9 @@ export function SidebarSectionButton({ path }: SidebarSectionButtonProps) {
 export function SidebarSectionButtonMinimize({
   path,
 }: SidebarSectionButtonProps) {
-  return <IconButton>{path.Icon}</IconButton>;
+  return (
+    <NextLink href={path.path}>
+      <IconButton>{path.Icon}</IconButton>
+    </NextLink>
+  );
 }

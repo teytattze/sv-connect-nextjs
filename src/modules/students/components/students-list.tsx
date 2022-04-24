@@ -11,7 +11,7 @@ import {
   TableHeadRow,
 } from 'src/components/table';
 import { useToggle } from 'src/hooks/use-toggle.hook';
-import { formateDateTime } from 'src/lib/datetime.lib';
+import { formatDateTime } from 'src/lib/datetime.lib';
 import {
   ProjectDetailsCard,
   useGetProjectByStudentId,
@@ -66,8 +66,8 @@ export function StudentsListRow({ student }: IStudentListRowProps) {
     <>
       <TableBodyRow expandable handleExpandClick={handleToggle}>
         <TableCell>{student.id}</TableCell>
-        <TableCell>{formateDateTime(student.createdAt)}</TableCell>
-        <TableCell>{formateDateTime(student.updatedAt)}</TableCell>
+        <TableCell>{formatDateTime(student.createdAt)}</TableCell>
+        <TableCell>{formatDateTime(student.updatedAt)}</TableCell>
       </TableBodyRow>
       <TableBodyRow>
         <TableCell sx={{ p: 0 }} colSpan={4}>

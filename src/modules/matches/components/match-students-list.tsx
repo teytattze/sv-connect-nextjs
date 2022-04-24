@@ -1,5 +1,4 @@
 import { Button, Stack } from '@mui/material';
-import { DateTime } from 'luxon';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useQueryClient } from 'react-query';
@@ -17,6 +16,7 @@ import {
 } from 'src/components/table';
 import { useTableCheckbox } from 'src/hooks/use-table-checkbox.hook';
 import { useToggle } from 'src/hooks/use-toggle.hook';
+import { formatDateTime } from 'src/lib/datetime.lib';
 import {
   ProjectDetailsCard,
   useGetProjectByStudentId,
@@ -121,10 +121,10 @@ export function MatchStudentsListRow({
           {student.id}
         </TableCell>
         <TableCell component="th" scope="row">
-          {DateTime.fromISO(student.createdAt).toHTTP()}
+          {formatDateTime(student.createdAt)}
         </TableCell>
         <TableCell component="th" scope="row">
-          {DateTime.fromISO(student.updatedAt).toHTTP()}
+          {formatDateTime(student.updatedAt)}
         </TableCell>
       </TableBodyRow>
       <TableBodyRow>

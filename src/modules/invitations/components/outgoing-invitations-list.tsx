@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon';
 import {
   Table,
   TableBody,
@@ -9,6 +8,7 @@ import {
   TableContainer,
   TableEmptyBox,
 } from 'src/components/table';
+import { formatDateTime } from 'src/lib/datetime.lib';
 import { useAuth } from 'src/modules/auth';
 import { useGetStudentByAccountId } from 'src/modules/students';
 import { useIndexInvitations } from '../invitations.query';
@@ -60,10 +60,10 @@ export function OutgoingInvitationList() {
                 {invitation.status}
               </TableCell>
               <TableCell component="th" scope="row">
-                {DateTime.fromISO(invitation.createdAt).toHTTP()}
+                {formatDateTime(invitation.createdAt)}
               </TableCell>
               <TableCell component="th" scope="row">
-                {DateTime.fromISO(invitation.updatedAt).toHTTP()}
+                {formatDateTime(invitation.updatedAt)}
               </TableCell>
             </TableBodyRow>
           ))}

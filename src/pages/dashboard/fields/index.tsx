@@ -2,7 +2,9 @@ import { Button } from '@mui/material';
 import { useState } from 'react';
 import { DashboardPageContainer } from 'src/containers/dashboard-page.container';
 import { DashboardLayout } from 'src/layouts/dashboard.layout';
+import { ComponentGuard } from 'src/modules/auth';
 import { CreateFieldModal, FieldsList } from 'src/modules/fields';
+import { AccountRole } from 'src/shared/enums/accounts.enum';
 
 export default function FieldsListPage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,9 +17,11 @@ export default function FieldsListPage() {
     <DashboardPageContainer
       title="Fields List"
       sideButton={
-        <Button variant="outlined" onClick={handleToggle}>
-          New Field
-        </Button>
+        <ComponentGuard roles={[AccountRole.ADMIN]}>
+          <Button variant="outlined" onClick={handleToggle}>
+            New Field
+          </Button>
+        </ComponentGuard>
       }
     >
       <FieldsList />

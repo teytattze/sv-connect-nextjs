@@ -90,31 +90,40 @@ export function Sidebar({ isOpen, routes, type, handleToggle }: SidebarProps) {
         />
         <Stack
           direction="column"
-          divider={
-            <Divider
-              flexItem
-              sx={{
-                width: type === SidebarType.DEFAULT ? '16rem' : '100%',
-                mx: 'auto',
-                alignSelf: 'center',
-              }}
-            />
-          }
           spacing={2.5}
           sx={{
             width: '100%',
             height: `calc(${height}px - 9rem)`,
-            // overflowY: 'scroll',
           }}
         >
-          {routes.map((route) =>
+          {routes.map((route, index) =>
             type === SidebarType.DEFAULT ? (
               <ComponentGuard key={route.group} roles={route.roles}>
                 <SidebarSection route={route} />
+                {index != routes.length - 1 && (
+                  <Divider
+                    flexItem
+                    sx={{
+                      width: '16rem',
+                      mx: 'auto',
+                      alignSelf: 'center',
+                    }}
+                  />
+                )}
               </ComponentGuard>
             ) : (
               <ComponentGuard key={route.group} roles={route.roles}>
                 <SidebarSectionMinimize route={route} />
+                {index != routes.length - 1 && (
+                  <Divider
+                    flexItem
+                    sx={{
+                      width: '100%',
+                      mx: 'auto',
+                      alignSelf: 'center',
+                    }}
+                  />
+                )}
               </ComponentGuard>
             )
           )}

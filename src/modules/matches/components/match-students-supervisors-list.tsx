@@ -1,6 +1,5 @@
 import { LoadingButton } from '@mui/lab';
 import { Box, Stack } from '@mui/material';
-import { DateTime } from 'luxon';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useQueryClient } from 'react-query';
@@ -17,7 +16,7 @@ import {
 } from 'src/components/table';
 import { useTableCheckbox } from 'src/hooks/use-table-checkbox.hook';
 import { useToggle } from 'src/hooks/use-toggle.hook';
-import { formateDateTime } from 'src/lib/datetime.lib';
+import { formatDateTime } from 'src/lib/datetime.lib';
 import {
   ProjectDetailsCard,
   useGetProjectByStudentId,
@@ -233,10 +232,10 @@ export function MatchStudentsListRow({
           {student.id}
         </TableCell>
         <TableCell component="th" scope="row">
-          {DateTime.fromISO(student.createdAt).toHTTP()}
+          {formatDateTime(student.createdAt)}
         </TableCell>
         <TableCell component="th" scope="row">
-          {DateTime.fromISO(student.updatedAt).toHTTP()}
+          {formatDateTime(student.updatedAt)}
         </TableCell>
       </TableBodyRow>
       <TableBodyRow>
@@ -267,15 +266,6 @@ export function MatchSupervisorsListRow({
   handleCheckboxToggle,
   handleCheckboxValue,
 }: IMatchSupervisorsListRowProps) {
-  const {
-    data: studentsRes,
-    isLoading: isIndexStudentsLoading,
-    isError: isIndexStudentsError,
-  } = useIndexStudents(
-    { supervisorId: supervisor.id },
-    { enabled: !!supervisor?.id }
-  );
-
   return (
     <TableBodyRow
       checkable
@@ -285,8 +275,8 @@ export function MatchSupervisorsListRow({
       <TableCell>{supervisor.id}</TableCell>
       <TableCell>{supervisor.capacity}</TableCell>
       <TableCell>{supervisor.field?.title || ' - '}</TableCell>
-      <TableCell>{formateDateTime(supervisor.createdAt)}</TableCell>
-      <TableCell>{formateDateTime(supervisor.updatedAt)}</TableCell>
+      <TableCell>{formatDateTime(supervisor.createdAt)}</TableCell>
+      <TableCell>{formatDateTime(supervisor.updatedAt)}</TableCell>
     </TableBodyRow>
   );
 }

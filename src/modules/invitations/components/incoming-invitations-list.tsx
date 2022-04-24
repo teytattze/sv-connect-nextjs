@@ -1,6 +1,5 @@
 import { LoadingButton } from '@mui/lab';
 import { Stack } from '@mui/material';
-import { DateTime } from 'luxon';
 import { useSnackbar } from 'notistack';
 import { useQueryClient } from 'react-query';
 import {
@@ -17,6 +16,7 @@ import {
 } from 'src/components/table';
 import { useTableCheckbox } from 'src/hooks/use-table-checkbox.hook';
 import { useToggle } from 'src/hooks/use-toggle.hook';
+import { formatDateTime } from 'src/lib/datetime.lib';
 import { useAuth } from 'src/modules/auth';
 import {
   ProjectDetailsCard,
@@ -150,10 +150,10 @@ export function IncomingInvitationsListRow({
           {invitation.status}
         </TableCell>
         <TableCell component="th" scope="row">
-          {DateTime.fromISO(invitation.createdAt).toHTTP()}
+          {formatDateTime(invitation.createdAt)}
         </TableCell>
         <TableCell component="th" scope="row">
-          {DateTime.fromISO(invitation.updatedAt).toHTTP()}
+          {formatDateTime(invitation.updatedAt)}
         </TableCell>
       </TableBodyRow>
       <TableBodyRow>

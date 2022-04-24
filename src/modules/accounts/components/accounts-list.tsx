@@ -9,6 +9,7 @@ import {
   TableContainer,
   TableEmptyBox,
 } from 'src/components/table';
+import { formatDateTime } from 'src/lib/datetime.lib';
 import { useIndexAccounts } from '../accounts.query';
 
 export function AccountsList() {
@@ -45,8 +46,8 @@ export function AccountsList() {
               <TableCell>
                 {account.emailVerified ? 'Verified' : 'Not Verified'}
               </TableCell>
-              <TableCell>{account.createdAt}</TableCell>
-              <TableCell>{account.updatedAt}</TableCell>
+              <TableCell>{formatDateTime(account.createdAt)}</TableCell>
+              <TableCell>{formatDateTime(account.updatedAt)}</TableCell>
             </TableBodyRow>
           ))}
         </TableBody>

@@ -1,7 +1,16 @@
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { DefaultLayout } from '../layouts/default.layout';
-import { LoginForm } from '../modules/auth';
+import { LoginForm, useAuth } from '../modules/auth';
 
 export default function LoginPage() {
+  const { account } = useAuth();
+  const { push } = useRouter();
+
+  useEffect(() => {
+    if (account) push('/dashboard');
+  }, []);
+
   return <LoginForm />;
 }
 
