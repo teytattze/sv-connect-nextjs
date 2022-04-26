@@ -49,12 +49,7 @@ export function SupervisorDetailsAccordion({
     isError: isIndexStudentsError,
   } = useIndexStudents(
     { supervisorId: supervisorRes?.data?.id },
-    {
-      enabled:
-        !!supervisorRes &&
-        !!supervisorRes.data &&
-        isSupervisorStudentsAccordionOpen,
-    }
+    { enabled: !!supervisorRes?.data?.id && isSupervisorStudentsAccordionOpen }
   );
 
   return (
@@ -64,7 +59,10 @@ export function SupervisorDetailsAccordion({
         onChange={handleSupervisorDetailsAccordionToggle}
       >
         <AccordionSummary title="Supervisor">
-          <ComponentGuard roles={[AccountRole.SUPERVISOR]} id={accountId}>
+          <ComponentGuard
+            roles={[AccountRole.SUPERVISOR, AccountRole.ADMIN]}
+            id={accountId}
+          >
             <Button
               size="small"
               onClick={(ev: React.SyntheticEvent) => {

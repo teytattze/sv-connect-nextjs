@@ -4,7 +4,7 @@ import { MatchStudentsSupervisorsList } from 'src/modules/matches';
 
 export default function MatchStudentsPage() {
   return (
-    <DashboardPageContainer title="Match Students">
+    <DashboardPageContainer title="Match Students and Supervisors">
       <MatchStudentsSupervisorsList />
     </DashboardPageContainer>
   );

@@ -195,7 +195,6 @@ export function MatchStudentsListActionsBar({
         { hasProject: true, hasSupervisor: false },
       ]);
       enqueueSnackbar('Students matches successfully', {
-        persist: true,
         variant: 'success',
       });
       handleResultModalToggle();

@@ -13,7 +13,11 @@ export function useHasPermission({
 }: UseHasPermissionOptions) {
   const { account } = useAuth();
   const hasPermission = () => {
-    if (account && roles.includes(account.role) && (!id || account.id === id))
+    if (
+      account &&
+      roles.includes(account.role) &&
+      (!id || account.id === id || account.role === AccountRole.ADMIN)
+    )
       return true;
     return false;
   };

@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import {
   Accordion,
   AccordionDetails,

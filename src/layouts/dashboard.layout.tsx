@@ -54,7 +54,7 @@ export function DashboardLayout({ children }: IDashboardLayoutProps) {
           float: 'right',
         }}
       >
-        <Navbar title="Helo" handleToggle={handleSidebarToggle} />
+        <Navbar title="Welcome" handleToggle={handleSidebarToggle} />
         <Box component="main">{children}</Box>
       </Box>
     </>

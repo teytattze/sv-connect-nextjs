@@ -100,9 +100,9 @@ function MatchResultAccordion({ match }: IMatchResultAccordionProps) {
     <Accordion expanded={isOpen} onChange={handleToggle}>
       <AccordionSummary title={student.id}>
         {isMatched ? (
-          <Chip size="small" label="success" color="success" />
+          <Chip size="small" label="Success" color="success" />
         ) : (
-          <Chip size="small" label="error" color="error" />
+          <Chip size="small" label="Failed" color="error" />
         )}
       </AccordionSummary>
       <AccordionDetails>

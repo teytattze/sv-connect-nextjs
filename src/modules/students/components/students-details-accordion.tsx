@@ -76,7 +76,10 @@ export function StudentDetailsAccordion({
       >
         <AccordionSummary title="Project">
           {projectRes && projectRes.data && (
-            <ComponentGuard roles={[AccountRole.STUDENT]} id={accountId}>
+            <ComponentGuard
+              roles={[AccountRole.STUDENT, AccountRole.ADMIN]}
+              id={accountId}
+            >
               <Button
                 size="small"
                 onClick={(ev: React.SyntheticEvent) => {

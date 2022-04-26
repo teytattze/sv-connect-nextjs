@@ -21,7 +21,7 @@ export function OutgoingInvitationList() {
     isLoading: isGetStudentLoading,
     isError: isGetStudentError,
   } = useGetStudentByAccountId(account!.id, {
-    enabled: !isLoading && !!account,
+    enabled: !isLoading && !!account?.id,
   });
   const {
     data: invitationsRes,
@@ -29,7 +29,7 @@ export function OutgoingInvitationList() {
     isError: isIndexInvitationsError,
   } = useIndexInvitations(
     { studentId: studentRes?.data?.id },
-    { enabled: !!studentRes && !!studentRes.data }
+    { enabled: !!studentRes?.data }
   );
 
   return (
